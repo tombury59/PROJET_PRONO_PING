@@ -30,4 +30,13 @@ class Phase extends Model
     {
         return $this->hasMany(QuestionBonus::class);
     }
+
+    public static function courante(): ?self
+    {
+        return static::query()
+            ->whereDate('date_debut', '<=', now())
+            ->whereDate('date_fin', '>=', now())
+            ->orderByDesc('date_debut')
+            ->first() ?? static::query()->orderByDesc('date_debut')->first();
+    }
 }

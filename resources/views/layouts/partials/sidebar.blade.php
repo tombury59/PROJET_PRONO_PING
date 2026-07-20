@@ -39,6 +39,17 @@
         </a>
 
         <a
+            href="{{ route('pronostics.index') }}"
+            @click="mobileOpen = false"
+            class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('pronostics.*') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
+        >
+            <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" />
+            </svg>
+            <span x-show="sidebarOpen" x-transition.opacity class="truncate">Pronostics</span>
+        </a>
+
+        <a
             href="{{ route('profile.edit') }}"
             @click="mobileOpen = false"
             class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('profile.edit') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
