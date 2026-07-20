@@ -6,7 +6,8 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="mx-auto max-w-3xl space-y-4 sm:px-6 lg:px-8">
+        <div class="mx-auto sm:px-6 lg:px-8">
+            <x-card class="mt-5 space-y-4 p-4">
             @if ($phases->isNotEmpty())
                 <form method="GET" action="{{ route('classement.index') }}" class="max-w-xs">
                     <x-input-label for="vue" value="Vue" />
@@ -34,7 +35,7 @@
                 </div>
             @endif
 
-            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-neutral-900">
+            <div class="overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
                 <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
                     <thead class="bg-neutral-50 dark:bg-neutral-800">
                         <tr>
@@ -69,6 +70,7 @@
                     </tbody>
                 </table>
             </div>
+            </x-card>
         </div>
     </div>
 </x-app-layout>

@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\MatchGame;
+use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class MatchResultController extends Controller
 {
+    public function __construct(private readonly NotificationService $notificationService)
+    {
+    }
+
     public function update(Request $request, MatchGame $match): RedirectResponse
     {
         $data = $request->validate([
@@ -26,6 +31,8 @@ class MatchResultController extends Controller
             $pronostic->setRelation('match', $match);
             $pronostic->update(['points_obtenus' => $pronostic->calculerPoints()]);
         }
+
+        $this->notificationService->resultatSaisi($match);
 
         return redirect()->route('admin.matches.index', ['phase_id' => $match->phase_id])
             ->with('status', 'Résultat enregistré, les points ont été calculés.');

@@ -2,21 +2,24 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Seed the application's database avec un jeu de données cohérent :
+     * utilisateurs, phases, matchs (avec résultats pour les phases
+     * passées), pronostics, questions bonus et notifications.
      */
     public function run(): void
     {
-        User::factory()->admin()->create([
-            'pseudo' => 'admin',
+        $this->call([
+            UserSeeder::class,
+            PhaseSeeder::class,
+            MatchSeeder::class,
+            PronosticSeeder::class,
+            QuestionBonusSeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }

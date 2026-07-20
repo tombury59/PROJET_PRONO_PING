@@ -50,16 +50,24 @@
                         </svg>
                         <span class="sr-only">ouvrir le menu</span>
                     </button>
-                    <span class="font-semibold text-neutral-900 dark:text-white">{{ config('app.name') }}</span>
+                    <span class="mr-auto font-semibold text-neutral-900 dark:text-white">{{ config('app.name') }}</span>
+
+                    @include('layouts.partials.notification-bell')
                 </div>
 
-                @isset($header)
-                    <header class="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
-                        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                            {{ $header }}
+                <header class="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+                    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
+                        <div class="min-w-0 flex-1">
+                            @isset($header)
+                                {{ $header }}
+                            @endisset
                         </div>
-                    </header>
-                @endisset
+
+                        <div class="ml-4 hidden shrink-0 lg:block">
+                            @include('layouts.partials.notification-bell')
+                        </div>
+                    </div>
+                </header>
 
                 <main id="main-content" class="flex-1 px-4">
                     {{ $slot }}

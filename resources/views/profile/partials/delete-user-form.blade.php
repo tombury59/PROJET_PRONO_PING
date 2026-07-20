@@ -1,10 +1,10 @@
 <section class="space-y-6">
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-neutral-900 dark:text-white">
             {{ __('Supprimer le compte') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             <!-- {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }} -->
             {{ __('Une fois votre compte supprimé, toutes ses ressources et données seront permanentement supprimées. Avant de supprimer votre compte, vous pouvez enregistrer les données ou informations que vous souhaitez conserver.') }}
 
@@ -21,11 +21,11 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-gray-900">
+            <h2 class="text-lg font-medium text-neutral-900 dark:text-white">
                 {{ __('Etes-vous sur de vouloir supprimer votre compte') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
                 <!-- {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }} -->
                 {{ __('Une fois votre compte supprimé, toutes ses ressources et données seront permanentement supprimées. Veuillez entrer votre mot de passe pour confirmer que vous souhaitez supprimer votre compte de fait.') }}
             </p>

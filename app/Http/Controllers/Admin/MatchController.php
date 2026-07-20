@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MatchGame;
 use App\Models\Phase;
+use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -12,6 +13,10 @@ use Illuminate\View\View;
 
 class MatchController extends Controller
 {
+    public function __construct(private readonly NotificationService $notificationService)
+    {
+    }
+
     public function index(Request $request): View
     {
         $phases = Phase::orderByDesc('date_debut')->get();
@@ -42,7 +47,9 @@ class MatchController extends Controller
     {
         $data = $this->validateData($request);
 
-        MatchGame::create($data);
+        $match = MatchGame::create($data);
+
+        $this->notificationService->matchCree($match);
 
         return redirect()->route('admin.matches.index', ['phase_id' => $data['phase_id']])
             ->with('status', 'Match créé.');

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\MatchResultController;
 use App\Http\Controllers\Admin\PhaseController;
 use App\Http\Controllers\ClassementController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PronosticController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/pronostics/{match}', [PronosticController::class, 'store'])->name('pronostics.store');
 
     Route::get('/classement', [ClassementController::class, 'index'])->name('classement.index');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/marquer-tout-lu', [NotificationController::class, 'marquerToutLu'])->name('notifications.marquer-tout-lu');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

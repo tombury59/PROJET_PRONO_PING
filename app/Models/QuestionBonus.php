@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QuestionBonus extends Model
 {
+    use HasFactory;
+
     protected $table = 'questions_bonus';
 
     protected $fillable = ['phase_id', 'match_id', 'question', 'reponse_correcte'];

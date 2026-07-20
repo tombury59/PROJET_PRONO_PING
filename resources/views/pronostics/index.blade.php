@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 ">
         <div class="mx-auto max-w-5xl space-y-4 sm:px-6 lg:px-8">
             @if (session('status'))
                 <div class="rounded-md bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400">
@@ -26,7 +26,7 @@
                     @php($prono = $match->pronostics->first())
                     @php($verrouille = $match->isVerrouille())
 
-                    <div class="rounded-lg bg-white p-6 shadow-sm dark:bg-neutral-900">
+                    <x-card class="p-6">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div>
                                 <p class="font-semibold text-neutral-900 dark:text-white">
@@ -108,7 +108,7 @@
                         @endif
                         <x-input-error :messages="$errors->get('prono_score_j1')" class="mt-2" />
                         <x-input-error :messages="$errors->get('prono_score_j2')" class="mt-2" />
-                    </div>
+                    </x-card>
                 @endforeach
             @endif
         </div>

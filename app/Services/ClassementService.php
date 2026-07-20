@@ -57,7 +57,6 @@ class ClassementService
             ->pluck('total', 'user_id');
 
         return User::query()
-            ->where('role', 'joueur')
             ->get()
             ->map(fn (User $user) => [
                 'user' => $user,

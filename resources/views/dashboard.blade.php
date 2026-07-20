@@ -8,8 +8,8 @@
     <div class="py-12">
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
             <!-- Zone 1 : prochains matchs (3/4) + statistiques (1/4) -->
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
-                <div class="lg:col-span-3">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-4 ">
+                <x-card class="lg:col-span-3 p-4">
                     <div class="flex items-center justify-between">
                         <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                             Prochains matchs
@@ -29,7 +29,7 @@
                                 @php($prono = $match->pronostics->first())
                                 <a
                                     href="{{ route('pronostics.index') }}"
-                                    class="block rounded-lg bg-white p-4 shadow-sm transition hover:shadow-md dark:bg-neutral-900"
+                                    class="block rounded-lg bg-white p-4 shadow-lg transition hover:shadow-md dark:bg-neutral-900"
                                 >
                                     <p class="text-sm text-neutral-500 dark:text-neutral-400">
                                         {{ $match->date_heure->format('d/m/Y H:i') }}
@@ -56,9 +56,9 @@
                             @endforeach
                         </div>
                     @endif
-                </div>
+                </x-card>
 
-                <div class="lg:col-span-1">
+                <x-card class="lg:col-span-1 p-4">
                     <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                         Mes statistiques
                     </h3>
@@ -86,17 +86,17 @@
                             </p>
                         </div>
                     </div>
-                </div>
+                </x-card>
             </div>
 
             <!-- Zone 2 : autres éléments (50/50) -->
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <div>
-                    <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 ">
+                <x-card class="p-4">
+                    <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 ">
                         Derniers résultats
                     </h3>
 
-                    <div class="mt-3 overflow-hidden rounded-lg bg-white shadow-sm dark:bg-neutral-900">
+                    <div class="mt-3 overflow-hidden rounded-lg bg-white shadow-sm dark:bg-neutral-900 ">
                         @forelse ($derniersResultats as $match)
                             @php($prono = $match->pronostics->first())
                             <div class="flex items-center justify-between border-b border-neutral-100 px-4 py-3 last:border-0 dark:border-neutral-800">
@@ -118,9 +118,9 @@
                             </p>
                         @endforelse
                     </div>
-                </div>
+                </x-card>
 
-                <div>
+                <x-card class="p-4">
                     <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                         Classement — top 5
                     </h3>
@@ -144,7 +144,7 @@
                             </p>
                         @endforelse
                     </div>
-                </div>
+                </x-card>
             </div>
         </div>
     </div>
