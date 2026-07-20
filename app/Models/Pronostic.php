@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pronostic extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id', 'match_id', 'prono_vainqueur',
         'prono_score_j1', 'prono_score_j2', 'points_obtenus',

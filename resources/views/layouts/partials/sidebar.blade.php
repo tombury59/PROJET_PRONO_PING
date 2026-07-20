@@ -65,6 +65,17 @@
                     </svg>
                     <span x-show="sidebarOpen" x-transition.opacity class="truncate">Phases</span>
                 </a>
+
+                <a
+                    href="{{ route('admin.matches.index') }}"
+                    @click="mobileOpen = false"
+                    class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.matches.*') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
+                >
+                    <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Matchs</span>
+                </a>
             </div>
         @endif
     </nav>
