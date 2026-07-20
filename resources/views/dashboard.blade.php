@@ -35,7 +35,7 @@
                                         {{ $match->date_heure->format('d/m/Y H:i') }}
                                     </p>
                                     <p class="mt-1 font-semibold text-neutral-900 dark:text-white">
-                                        {{ $match->joueur_1 }} vs {{ $match->joueur_2 }}
+                                        {{ $match->equipe1() }} vs {{ $match->equipe2() }}
                                     </p>
                                     <div class="mt-3">
                                         @if ($prono)
@@ -102,7 +102,7 @@
                             <div class="flex items-center justify-between border-b border-neutral-100 px-4 py-3 last:border-0 dark:border-neutral-800">
                                 <div>
                                     <p class="text-sm font-medium text-neutral-900 dark:text-white">
-                                        {{ $match->joueur_1 }} vs {{ $match->joueur_2 }}
+                                        {{ $match->equipe1() }} vs {{ $match->equipe2() }}
                                     </p>
                                     <p class="text-xs text-neutral-500 dark:text-neutral-400">
                                         {{ $match->date_heure->format('d/m/Y') }} — {{ $match->score_j1 }}-{{ $match->score_j2 }}

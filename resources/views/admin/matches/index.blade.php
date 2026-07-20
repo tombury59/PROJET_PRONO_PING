@@ -61,7 +61,7 @@
                         @forelse ($matches as $match)
                             <tr>
                                 <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-neutral-900 dark:text-white">
-                                    {{ $match->joueur_1 }} vs {{ $match->joueur_2 }}
+                                    {{ $match->equipe1() }} vs {{ $match->equipe2() }}
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-sm text-neutral-600 dark:text-neutral-300">
                                     {{ $match->date_heure->format('d/m/Y H:i') }}

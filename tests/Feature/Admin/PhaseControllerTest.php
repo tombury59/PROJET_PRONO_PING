@@ -103,6 +103,7 @@ class PhaseControllerTest extends TestCase
             'joueur_1' => 'Alice',
             'joueur_2' => 'Bob',
             'date_heure' => now()->addDay(),
+            'date_fin_pronostics' => now()->addDay()->subHour(),
         ]);
 
         $response = $this->actingAs($admin)->delete("/admin/phases/{$phase->id}");

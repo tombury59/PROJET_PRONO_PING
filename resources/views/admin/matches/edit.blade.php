@@ -39,7 +39,7 @@
 
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
-                            <x-input-label for="score_j1" :value="$match->joueur_1" />
+                            <x-input-label for="score_j1" :value="$match->equipe1()" />
                             <x-text-input
                                 id="score_j1"
                                 name="score_j1"
@@ -53,7 +53,7 @@
                         </div>
 
                         <div>
-                            <x-input-label for="score_j2" :value="$match->joueur_2" />
+                            <x-input-label for="score_j2" :value="$match->equipe2()" />
                             <x-text-input
                                 id="score_j2"
                                 name="score_j2"

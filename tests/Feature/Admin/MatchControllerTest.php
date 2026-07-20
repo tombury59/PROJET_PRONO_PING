@@ -45,6 +45,7 @@ class MatchControllerTest extends TestCase
             'joueur_1' => 'Alice',
             'joueur_2' => 'Bob',
             'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
+            'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
         ]);
 
         $response->assertRedirect();
@@ -65,9 +66,127 @@ class MatchControllerTest extends TestCase
             'joueur_1' => 'Alice',
             'joueur_2' => 'Alice',
             'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
+            'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
         ]);
 
         $response->assertSessionHasErrors('joueur_2');
+    }
+
+    public function test_date_fin_pronostics_must_be_before_date_heure(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $phase = Phase::factory()->create();
+
+        $response = $this->actingAs($admin)->post('/admin/matches', [
+            'phase_id' => $phase->id,
+            'joueur_1' => 'Alice',
+            'joueur_2' => 'Bob',
+            'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
+            'date_fin_pronostics' => now()->addWeek()->addHour()->format('Y-m-d H:i:s'),
+        ]);
+
+        $response->assertSessionHasErrors('date_fin_pronostics');
+    }
+
+    public function test_pushing_the_match_date_later_resyncs_the_untouched_lock_time(): void
+    {
+        $admin = User::factory()->admin()->create();
+        // Match créé avec une heure proche : verrouillé dès la création.
+        $match = MatchGame::factory()->create([
+            'date_heure' => now()->addMinutes(10),
+        ]);
+        $this->assertTrue($match->isVerrouille());
+
+        $nouvelleDateHeure = now()->addWeek();
+
+        // Le formulaire renvoie l'ANCIENNE valeur par défaut de "fin des pronostics"
+        // (simulateur : le JS de la page n'a pas resynchronisé ce champ, ou l'admin
+        // n'a pas remarqué qu'il fallait le changer).
+        $response = $this->actingAs($admin)->put("/admin/matches/{$match->id}", [
+            'phase_id' => $match->phase_id,
+            'joueur_1' => $match->joueur_1,
+            'joueur_2' => $match->joueur_2,
+            'date_heure' => $nouvelleDateHeure->format('Y-m-d H:i:s'),
+            'date_fin_pronostics' => $match->date_heure->copy()->subHour()->format('Y-m-d H:i:s'),
+        ]);
+
+        $response->assertRedirect();
+        $this->assertFalse($match->fresh()->isVerrouille());
+        $this->assertSame(
+            $nouvelleDateHeure->copy()->subHour()->format('Y-m-d H:i:s'),
+            $match->fresh()->date_fin_pronostics->format('Y-m-d H:i:s')
+        );
+    }
+
+    public function test_manually_customized_lock_time_is_respected_when_date_changes(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $match = MatchGame::factory()->create([
+            'date_heure' => now()->addWeek(),
+        ]);
+
+        $nouvelleDateHeure = now()->addWeeks(2);
+        $finPronosticsPersonnalisee = $nouvelleDateHeure->copy()->subHours(3);
+
+        $response = $this->actingAs($admin)->put("/admin/matches/{$match->id}", [
+            'phase_id' => $match->phase_id,
+            'joueur_1' => $match->joueur_1,
+            'joueur_2' => $match->joueur_2,
+            'date_heure' => $nouvelleDateHeure->format('Y-m-d H:i:s'),
+            'date_fin_pronostics' => $finPronosticsPersonnalisee->format('Y-m-d H:i:s'),
+        ]);
+
+        $response->assertRedirect();
+        $this->assertSame(
+            $finPronosticsPersonnalisee->format('Y-m-d H:i:s'),
+            $match->fresh()->date_fin_pronostics->format('Y-m-d H:i:s')
+        );
+    }
+
+    public function test_admin_can_create_a_double_match(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $phase = Phase::factory()->create();
+
+        $response = $this->actingAs($admin)->post('/admin/matches', [
+            'phase_id' => $phase->id,
+            'joueur_1' => 'Alice',
+            'joueur_1_partenaire' => 'Chloé',
+            'joueur_2' => 'Bob',
+            'joueur_2_partenaire' => 'Dan',
+            'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
+            'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('matches', [
+            'joueur_1' => 'Alice',
+            'joueur_1_partenaire' => 'Chloé',
+            'joueur_2' => 'Bob',
+            'joueur_2_partenaire' => 'Dan',
+        ]);
+
+        $match = MatchGame::where('joueur_1', 'Alice')->firstOrFail();
+        $this->assertTrue($match->estDouble());
+        $this->assertSame('Alice / Chloé', $match->equipe1());
+        $this->assertSame('Bob / Dan', $match->equipe2());
+    }
+
+    public function test_double_match_requires_both_partners(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $phase = Phase::factory()->create();
+
+        $response = $this->actingAs($admin)->post('/admin/matches', [
+            'phase_id' => $phase->id,
+            'joueur_1' => 'Alice',
+            'joueur_1_partenaire' => 'Chloé',
+            'joueur_2' => 'Bob',
+            'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
+            'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
+        ]);
+
+        $response->assertSessionHasErrors('joueur_2_partenaire');
     }
 
     public function test_admin_cannot_delete_a_match_with_pronostics(): void

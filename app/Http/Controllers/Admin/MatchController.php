@@ -7,6 +7,7 @@ use App\Models\MatchGame;
 use App\Models\Phase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 
 class MatchController extends Controller
@@ -39,12 +40,7 @@ class MatchController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'phase_id' => ['required', 'exists:phases,id'],
-            'joueur_1' => ['required', 'string', 'max:255'],
-            'joueur_2' => ['required', 'string', 'max:255', 'different:joueur_1'],
-            'date_heure' => ['required', 'date'],
-        ]);
+        $data = $this->validateData($request);
 
         MatchGame::create($data);
 
@@ -61,12 +57,20 @@ class MatchController extends Controller
 
     public function update(Request $request, MatchGame $match): RedirectResponse
     {
-        $data = $request->validate([
-            'phase_id' => ['required', 'exists:phases,id'],
-            'joueur_1' => ['required', 'string', 'max:255'],
-            'joueur_2' => ['required', 'string', 'max:255', 'different:joueur_1'],
-            'date_heure' => ['required', 'date'],
-        ]);
+        $data = $this->validateData($request);
+
+        // Si la fin des pronostics n'a pas été personnalisée (elle vaut toujours
+        // l'ancien "1h avant" par défaut) et que la date du match a changé, on la
+        // resynchronise automatiquement pour éviter un match resté verrouillé
+        // à cause d'une ancienne date oubliée dans ce champ.
+        $ancienDefaut = $match->date_heure->copy()->subHour()->format('Y-m-d H:i:s');
+        $nouvelleDateHeure = Carbon::parse($data['date_heure']);
+        $finPronosticsSoumise = Carbon::parse($data['date_fin_pronostics'])->format('Y-m-d H:i:s');
+        $dateHeureInchangee = $nouvelleDateHeure->format('Y-m-d H:i:s') === $match->date_heure->format('Y-m-d H:i:s');
+
+        if ($finPronosticsSoumise === $ancienDefaut && ! $dateHeureInchangee) {
+            $data['date_fin_pronostics'] = $nouvelleDateHeure->copy()->subHour();
+        }
 
         $match->update($data);
 
@@ -86,5 +90,18 @@ class MatchController extends Controller
 
         return redirect()->route('admin.matches.index', ['phase_id' => $phaseId])
             ->with('status', 'Match supprimé.');
+    }
+
+    private function validateData(Request $request): array
+    {
+        return $request->validate([
+            'phase_id' => ['required', 'exists:phases,id'],
+            'joueur_1' => ['required', 'string', 'max:255'],
+            'joueur_1_partenaire' => ['nullable', 'string', 'max:255', 'different:joueur_1', 'required_with:joueur_2_partenaire'],
+            'joueur_2' => ['required', 'string', 'max:255', 'different:joueur_1'],
+            'joueur_2_partenaire' => ['nullable', 'string', 'max:255', 'different:joueur_2', 'different:joueur_1_partenaire', 'required_with:joueur_1_partenaire'],
+            'date_heure' => ['required', 'date'],
+            'date_fin_pronostics' => ['required', 'date', 'before:date_heure'],
+        ]);
     }
 }

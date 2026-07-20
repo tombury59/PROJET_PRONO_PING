@@ -14,14 +14,15 @@ class MatchGame extends Model
     protected $table = 'matches';
 
     protected $fillable = [
-        'phase_id', 'joueur_1', 'joueur_2', 'date_heure',
-        'score_j1', 'score_j2', 'resultat_saisi',
+        'phase_id', 'joueur_1', 'joueur_1_partenaire', 'joueur_2', 'joueur_2_partenaire',
+        'date_heure', 'date_fin_pronostics', 'score_j1', 'score_j2', 'resultat_saisi',
     ];
 
     protected function casts(): array
     {
         return [
             'date_heure' => 'datetime',
+            'date_fin_pronostics' => 'datetime',
             'resultat_saisi' => 'boolean',
         ];
     }
@@ -43,7 +44,7 @@ class MatchGame extends Model
 
     public function isVerrouille(): bool
     {
-        return now()->greaterThanOrEqualTo($this->date_heure->copy()->subHour());
+        return now()->greaterThanOrEqualTo($this->date_fin_pronostics);
     }
 
     public function vainqueur(): ?int
@@ -53,5 +54,24 @@ class MatchGame extends Model
         }
 
         return $this->score_j1 > $this->score_j2 ? 1 : 2;
+    }
+
+    public function estDouble(): bool
+    {
+        return ! empty($this->joueur_1_partenaire) || ! empty($this->joueur_2_partenaire);
+    }
+
+    public function equipe1(): string
+    {
+        return $this->joueur_1_partenaire
+            ? "{$this->joueur_1} / {$this->joueur_1_partenaire}"
+            : $this->joueur_1;
+    }
+
+    public function equipe2(): string
+    {
+        return $this->joueur_2_partenaire
+            ? "{$this->joueur_2} / {$this->joueur_2_partenaire}"
+            : $this->joueur_2;
     }
 }

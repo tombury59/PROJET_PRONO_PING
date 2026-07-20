@@ -30,7 +30,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div>
                                 <p class="font-semibold text-neutral-900 dark:text-white">
-                                    {{ $match->joueur_1 }} vs {{ $match->joueur_2 }}
+                                    {{ $match->equipe1() }} vs {{ $match->equipe2() }}
                                 </p>
                                 <p class="text-sm text-neutral-500 dark:text-neutral-400">
                                     {{ $match->date_heure->format('d/m/Y H:i') }}
@@ -55,52 +55,57 @@
                             </div>
                         </div>
 
-                        <form
-                            method="POST"
-                            action="{{ route('pronostics.store', $match) }}"
-                            class="mt-4 flex flex-wrap items-end gap-3"
-                        >
-                            @csrf
+                        @if ($match->resultat_saisi)
+                            <p class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+                                Résultat : {{ $match->score_j1 }} - {{ $match->score_j2 }}
+                            </p>
+                        @else
+                            <form
+                                method="POST"
+                                action="{{ route('pronostics.store', $match) }}"
+                                class="mt-4 flex flex-wrap items-end gap-3"
+                            >
+                                @csrf
 
-                            <div>
-                                <x-input-label :for="'score_j1_'.$match->id" :value="$match->joueur_1" />
-                                <input
-                                    id="score_j1_{{ $match->id }}"
-                                    name="prono_score_j1"
-                                    type="number"
-                                    min="0"
-                                    max="3"
-                                    value="{{ old('prono_score_j1', $prono->prono_score_j1 ?? '') }}"
-                                    @disabled($verrouille)
-                                    class="mt-1 block w-20 rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-neutral-100 disabled:text-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:disabled:bg-neutral-900"
-                                    required
-                                />
-                            </div>
+                                <div>
+                                    <x-input-label :for="'score_j1_'.$match->id" :value="$match->equipe1()" />
+                                    <input
+                                        id="score_j1_{{ $match->id }}"
+                                        name="prono_score_j1"
+                                        type="number"
+                                        min="0"
+                                        max="3"
+                                        value="{{ old('prono_score_j1', $prono->prono_score_j1 ?? '') }}"
+                                        @disabled($verrouille)
+                                        class="mt-1 block w-20 rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-neutral-100 disabled:text-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:disabled:bg-neutral-900"
+                                        required
+                                    />
+                                </div>
 
-                            <span class="pb-2 text-neutral-400">—</span>
+                                <span class="pb-2 text-neutral-400">—</span>
 
-                            <div>
-                                <x-input-label :for="'score_j2_'.$match->id" :value="$match->joueur_2" />
-                                <input
-                                    id="score_j2_{{ $match->id }}"
-                                    name="prono_score_j2"
-                                    type="number"
-                                    min="0"
-                                    max="3"
-                                    value="{{ old('prono_score_j2', $prono->prono_score_j2 ?? '') }}"
-                                    @disabled($verrouille)
-                                    class="mt-1 block w-20 rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-neutral-100 disabled:text-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:disabled:bg-neutral-900"
-                                    required
-                                />
-                            </div>
+                                <div>
+                                    <x-input-label :for="'score_j2_'.$match->id" :value="$match->equipe2()" />
+                                    <input
+                                        id="score_j2_{{ $match->id }}"
+                                        name="prono_score_j2"
+                                        type="number"
+                                        min="0"
+                                        max="3"
+                                        value="{{ old('prono_score_j2', $prono->prono_score_j2 ?? '') }}"
+                                        @disabled($verrouille)
+                                        class="mt-1 block w-20 rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-neutral-100 disabled:text-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:disabled:bg-neutral-900"
+                                        required
+                                    />
+                                </div>
 
-                            @unless ($verrouille)
-                                <x-primary-button>
-                                    {{ $prono ? 'Modifier' : 'Valider' }}
-                                </x-primary-button>
-                            @endunless
-                        </form>
-
+                                @unless ($verrouille)
+                                    <x-primary-button>
+                                        {{ $prono ? 'Modifier' : 'Valider' }}
+                                    </x-primary-button>
+                                @endunless
+                            </form>
+                        @endif
                         <x-input-error :messages="$errors->get('prono_score_j1')" class="mt-2" />
                         <x-input-error :messages="$errors->get('prono_score_j2')" class="mt-2" />
                     </div>
