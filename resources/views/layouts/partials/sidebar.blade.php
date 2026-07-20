@@ -48,6 +48,25 @@
             </svg>
             <span x-show="sidebarOpen" x-transition.opacity class="truncate">Profil</span>
         </a>
+
+        @if (auth()->user()?->isAdmin())
+            <div class="mt-4 border-t border-neutral-200 pt-4 dark:border-neutral-800">
+                <span x-show="sidebarOpen" x-transition.opacity class="block px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                    Administration
+                </span>
+
+                <a
+                    href="{{ route('admin.phases.index') }}"
+                    @click="mobileOpen = false"
+                    class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.phases.*') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
+                >
+                    <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M4 7h16M5 7h14v12a1 1 0 01-1 1H6a1 1 0 01-1-1V7z" />
+                    </svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Phases</span>
+                </a>
+            </div>
+        @endif
     </nav>
 
     <!-- Collapse toggle (desktop only) -->
