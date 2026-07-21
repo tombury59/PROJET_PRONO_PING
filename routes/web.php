@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\MatchController;
 use App\Http\Controllers\Admin\MatchResultController;
 use App\Http\Controllers\Admin\PhaseController;
+use App\Http\Controllers\Admin\QuestionBonusController as AdminQuestionBonusController;
+use App\Http\Controllers\BonusController;
 use App\Http\Controllers\CalendrierController;
 use App\Http\Controllers\ClassementController;
 use App\Http\Controllers\DashboardController;
@@ -29,6 +31,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/calendrier', [CalendrierController::class, 'index'])->name('calendrier.index');
 
+    Route::get('/bonus', [BonusController::class, 'index'])->name('bonus.index');
+    Route::post('/bonus/{question}', [BonusController::class, 'store'])->name('bonus.store');
+
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/marquer-tout-lu', [NotificationController::class, 'marquerToutLu'])->name('notifications.marquer-tout-lu');
 });
@@ -42,6 +47,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::put('matches/{match}/resultat', [MatchResultController::class, 'update'])
         ->name('matches.resultat.update');
+
+    Route::resource('questions-bonus', AdminQuestionBonusController::class)
+        ->except('show')
+        ->parameters(['questions-bonus' => 'question']);
 });
 
 require __DIR__.'/auth.php';

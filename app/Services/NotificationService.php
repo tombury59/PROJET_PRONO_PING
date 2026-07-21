@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\MatchGame;
+use App\Models\QuestionBonus;
 use App\Models\User;
+use App\Notifications\BonusResolu;
 use App\Notifications\NouveauMatchDisponible;
+use App\Notifications\NouvelleQuestionBonus;
 use App\Notifications\ResultatADeposer;
 use App\Notifications\ResultatDisponible;
 use Illuminate\Notifications\DatabaseNotification;
@@ -23,6 +26,20 @@ class NotificationService
     {
         foreach ($match->pronostics as $pronostic) {
             $pronostic->user->notify(new ResultatDisponible($match, $pronostic->points_obtenus ?? 0));
+        }
+    }
+
+    public function questionBonusCreee(QuestionBonus $question): void
+    {
+        $joueurs = User::where('role', 'joueur')->get();
+
+        Notification::send($joueurs, new NouvelleQuestionBonus($question));
+    }
+
+    public function bonusResolu(QuestionBonus $question): void
+    {
+        foreach ($question->reponses as $reponse) {
+            $reponse->user->notify(new BonusResolu($question, $reponse->points_obtenus ?? 0));
         }
     }
 
