@@ -36,11 +36,29 @@ class MatchController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
         $phases = Phase::orderByDesc('date_debut')->get();
 
-        return view('admin.matches.create', ['phases' => $phases]);
+        $dateHeurePreremplie = null;
+        $phaseIdPreremplie = null;
+
+        if ($request->filled('date')) {
+            try {
+                $dateHeurePreremplie = Carbon::createFromFormat('Y-m-d', $request->query('date'))->setTime(19, 0);
+                $phaseIdPreremplie = $phases->first(
+                    fn (Phase $phase) => $dateHeurePreremplie->between($phase->date_debut, $phase->date_fin)
+                )?->id;
+            } catch (\Exception) {
+                $dateHeurePreremplie = null;
+            }
+        }
+
+        return view('admin.matches.create', [
+            'phases' => $phases,
+            'dateHeurePreremplie' => $dateHeurePreremplie,
+            'phaseIdPreremplie' => $phaseIdPreremplie,
+        ]);
     }
 
     public function store(Request $request): RedirectResponse

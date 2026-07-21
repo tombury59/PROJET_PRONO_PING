@@ -1,4 +1,6 @@
 @php($match = $match ?? null)
+@php($dateHeurePreremplie = $dateHeurePreremplie ?? null)
+@php($phaseIdPreremplie = $phaseIdPreremplie ?? null)
 
 <div>
     <x-input-label for="phase_id" value="Phase" />
@@ -10,7 +12,7 @@
     >
         <option value="">— Choisir une phase —</option>
         @foreach ($phases as $phase)
-            <option value="{{ $phase->id }}" @selected(old('phase_id', $match->phase_id ?? null) == $phase->id)>
+            <option value="{{ $phase->id }}" @selected(old('phase_id', $match->phase_id ?? $phaseIdPreremplie) == $phase->id)>
                 {{ $phase->nom }}
             </option>
         @endforeach
@@ -94,7 +96,7 @@
         name="date_heure"
         type="datetime-local"
         class="mt-1 block w-full"
-        :value="old('date_heure', optional($match->date_heure ?? null)->format('Y-m-d\TH:i'))"
+        :value="old('date_heure', optional($match->date_heure ?? $dateHeurePreremplie)->format('Y-m-d\TH:i'))"
         required
         x-on:change="
             if (! $event.target.value) return;
@@ -114,7 +116,7 @@
             name="date_fin_pronostics"
             type="datetime-local"
             class="mt-1 block w-full"
-            :value="old('date_fin_pronostics', optional($match->date_fin_pronostics ?? null)->format('Y-m-d\TH:i'))"
+            :value="old('date_fin_pronostics', optional($match->date_fin_pronostics ?? $dateHeurePreremplie?->copy()->subHour())->format('Y-m-d\TH:i'))"
             required
         />
         <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">

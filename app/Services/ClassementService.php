@@ -15,10 +15,42 @@ class ClassementService
      */
     public function pourPhase(Phase $phase): Collection
     {
+        $phaseIds = $this->phasesPourClassement($phase)->pluck('id');
+
         return $this->calculer(
-            fn ($query) => $query->where('matches.phase_id', $phase->id),
-            fn ($query) => $query->where('questions_bonus.phase_id', $phase->id),
+            fn ($query) => $query->whereIn('matches.phase_id', $phaseIds),
+            fn ($query) => $query->whereIn('questions_bonus.phase_id', $phaseIds),
         );
+    }
+
+    /**
+     * Les phases dont les points sont cumulés dans le classement de $phase :
+     * on remonte les phases précédentes tant que leur reset n'est pas activé.
+     * Une phase avec reset_classement = true "coupe" la chaîne (ses propres
+     * points comptent, mais rien avant elle).
+     *
+     * @return Collection<int, Phase>
+     */
+    public function phasesPourClassement(Phase $phase): Collection
+    {
+        $phases = Phase::orderBy('date_debut')->get();
+        $index = $phases->search(fn (Phase $p) => $p->id === $phase->id);
+
+        if ($index === false) {
+            return collect([$phase]);
+        }
+
+        $incluses = collect();
+
+        for ($i = $index; $i >= 0; $i--) {
+            $incluses->push($phases[$i]);
+
+            if ($phases[$i]->reset_classement) {
+                break;
+            }
+        }
+
+        return $incluses->reverse()->values();
     }
 
     /**

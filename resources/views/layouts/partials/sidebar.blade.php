@@ -32,6 +32,7 @@
         <a
             href="{{ route('dashboard') }}"
             @click="mobileOpen = false"
+            x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
             class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('dashboard') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
         >
             <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -43,6 +44,7 @@
         <a
             href="{{ route('pronostics.index') }}"
             @click="mobileOpen = false"
+            x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
             class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('pronostics.*') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
         >
             <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,6 +56,7 @@
         <a
             href="{{ route('classement.index') }}"
             @click="mobileOpen = false"
+            x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
             class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('classement.*') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
         >
             <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,8 +66,21 @@
         </a>
 
         <a
+            href="{{ route('calendrier.index') }}"
+            @click="mobileOpen = false"
+            x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
+            class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('calendrier.*') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
+        >
+            <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate">Calendrier</span>
+        </a>
+
+        <a
             href="{{ route('profile.edit') }}"
             @click="mobileOpen = false"
+            x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
             class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('profile.edit') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
         >
             <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,6 +98,7 @@
                 <a
                     href="{{ route('admin.phases.index') }}"
                     @click="mobileOpen = false"
+                    x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
                     class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.phases.*') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
                 >
                     <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,6 +110,7 @@
                 <a
                     href="{{ route('admin.matches.index') }}"
                     @click="mobileOpen = false"
+                    x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
                     class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.matches.*') ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5' }}"
                 >
                     <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,6 +125,7 @@
     <!-- Collapse toggle (desktop only) -->
     <button
         @click="sidebarOpen = !sidebarOpen"
+        x-bind:class="! sidebarOpen && 'lg:justify-center lg:px-0'"
         class="hidden shrink-0 items-center gap-3 border-t border-neutral-200 px-4 py-3 text-sm font-medium text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 lg:flex dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
     >
         <svg
@@ -121,7 +140,7 @@
 
     <!-- User / logout -->
     <div class="shrink-0 border-t border-neutral-200 p-3 dark:border-neutral-800">
-        <div class="flex items-center gap-3 overflow-hidden px-1 py-1">
+        <div class="flex items-center gap-3 overflow-hidden px-1 py-1" x-bind:class="! sidebarOpen && 'lg:justify-center'">
             <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-900 text-xs font-semibold text-white dark:bg-white dark:text-neutral-900">
                 {{ auth()->check() ? strtoupper(substr(auth()->user()->pseudo, 0, 1)) : '?' }}
             </div>
@@ -134,6 +153,7 @@
             @csrf
             <button
                 type="submit"
+                x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
                 class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5"
             >
                 <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

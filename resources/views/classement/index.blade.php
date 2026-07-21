@@ -29,6 +29,13 @@
                 </form>
             @endif
 
+            @if ($phasesIncluses->count() > 1)
+                <div class="rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+                    Classement cumulé sur : {{ $phasesIncluses->pluck('nom')->join(' → ') }}
+                    (reset non activé sur {{ $phase->nom }}).
+                </div>
+            @endif
+
             @if ($monRang)
                 <div class="rounded-md bg-neutral-100 px-4 py-3 text-sm text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
                     Tu es actuellement <span class="font-semibold">#{{ $monRang }}</span> sur {{ $classement->count() }}.

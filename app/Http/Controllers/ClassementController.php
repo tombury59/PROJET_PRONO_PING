@@ -15,6 +15,7 @@ class ClassementController extends Controller
         $phaseCourante = Phase::courante();
 
         $selection = $request->input('vue', $phaseCourante?->id);
+        $phasesIncluses = collect();
 
         if ($selection === 'global') {
             $phase = null;
@@ -22,6 +23,7 @@ class ClassementController extends Controller
         } else {
             $phase = $phases->firstWhere('id', (int) $selection) ?? $phaseCourante;
             $classement = $phase ? $classementService->pourPhase($phase) : collect();
+            $phasesIncluses = $phase ? $classementService->phasesPourClassement($phase) : collect();
         }
 
         return view('classement.index', [
@@ -29,6 +31,7 @@ class ClassementController extends Controller
             'phase' => $phase,
             'selection' => $selection,
             'classement' => $classement,
+            'phasesIncluses' => $phasesIncluses,
             'monRang' => $classementService->rangDe($request->user(), $classement),
         ]);
     }
