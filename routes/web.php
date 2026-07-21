@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\MatchController;
 use App\Http\Controllers\Admin\MatchResultController;
 use App\Http\Controllers\Admin\PhaseController;
 use App\Http\Controllers\Admin\QuestionBonusController as AdminQuestionBonusController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\BonusController;
 use App\Http\Controllers\CalendrierController;
 use App\Http\Controllers\ClassementController;
@@ -53,6 +54,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('questions-bonus', AdminQuestionBonusController::class)
         ->except('show')
         ->parameters(['questions-bonus' => 'question']);
+
+    Route::get('utilisateurs', [AdminUserController::class, 'index'])->name('users.index');
+    Route::patch('utilisateurs/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role.update');
+    Route::delete('utilisateurs/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 });
 
 require __DIR__.'/auth.php';
