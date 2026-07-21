@@ -27,6 +27,13 @@ class NotificationService
         foreach ($match->pronostics as $pronostic) {
             $pronostic->user->notify(new ResultatDisponible($match, $pronostic->points_obtenus ?? 0));
         }
+
+        // Le résultat est saisi : le rappel "résultat à déposer" pour ce
+        // match n'a plus lieu d'être, pour aucun admin.
+        DatabaseNotification::where('type', ResultatADeposer::class)
+            ->where('data->match_id', $match->id)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
     }
 
     public function questionBonusCreee(QuestionBonus $question): void

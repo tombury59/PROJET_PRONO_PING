@@ -100,6 +100,32 @@ class NotificationServiceTest extends TestCase
         $this->assertSame(1, $admin->notifications()->where('type', ResultatADeposer::class)->count());
     }
 
+    public function test_resultat_saisi_clears_the_pending_reminder_for_that_match(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $match = MatchGame::factory()->create([
+            'date_heure' => now()->subMinutes(30),
+            'resultat_saisi' => false,
+        ]);
+
+        $service = app(NotificationService::class);
+        $service->verifierResultatsEnAttente();
+
+        $this->assertSame(
+            1,
+            $admin->notifications()->where('type', ResultatADeposer::class)->whereNull('read_at')->count()
+        );
+
+        $match->update(['resultat_saisi' => true, 'score_j1' => 3, 'score_j2' => 1]);
+        $service->resultatSaisi($match);
+
+        $this->assertSame(
+            0,
+            $admin->notifications()->where('type', ResultatADeposer::class)->whereNull('read_at')->count()
+        );
+    }
+
     public function test_admin_middleware_triggers_pending_results_check(): void
     {
         Notification::fake();

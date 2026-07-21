@@ -16,12 +16,29 @@
     <x-slot name="content">
         <div class="max-h-80 overflow-y-auto">
             @forelse (auth()->user()->notifications()->latest()->limit(5)->get() as $notification)
-                <a
-                    href="{{ $notification->data['url'] ?? '#' }}"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-white/5 {{ $notification->read_at ? '' : 'font-medium' }}"
-                >
-                    {{ $notification->data['message'] ?? '' }}
-                </a>
+                <div class="group flex items-center hover:bg-gray-100 dark:hover:bg-white/5">
+                    <a
+                        href="{{ route('notifications.voir', $notification->id) }}"
+                        class="flex-1 truncate px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 {{ $notification->read_at ? '' : 'font-medium' }}"
+                    >
+                        {{ $notification->data['message'] ?? '' }}
+                    </a>
+
+                    <form method="POST" action="{{ route('notifications.destroy', $notification->id) }}" class="pr-2">
+                        @csrf
+                        @method('DELETE')
+                        <button
+                            type="submit"
+                            class="rounded p-1 text-neutral-300 hover:text-red-600 group-hover:text-neutral-400 dark:hover:text-red-400"
+                            title="Supprimer"
+                        >
+                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span class="sr-only">Supprimer la notification</span>
+                        </button>
+                    </form>
+                </div>
             @empty
                 <p class="px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400">
                     Aucune notification.

@@ -23,4 +23,19 @@ class NotificationController extends Controller
 
         return back();
     }
+
+    public function voir(Request $request, string $notification): RedirectResponse
+    {
+        $notif = $request->user()->notifications()->findOrFail($notification);
+        $notif->markAsRead();
+
+        return redirect($notif->data['url'] ?? route('dashboard'));
+    }
+
+    public function destroy(Request $request, string $notification): RedirectResponse
+    {
+        $request->user()->notifications()->findOrFail($notification)->delete();
+
+        return back();
+    }
 }

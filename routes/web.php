@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/marquer-tout-lu', [NotificationController::class, 'marquerToutLu'])->name('notifications.marquer-tout-lu');
+    Route::get('/notifications/{notification}/voir', [NotificationController::class, 'voir'])->name('notifications.voir');
+    Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
