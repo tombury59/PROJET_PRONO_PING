@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MatchGame;
 use App\Models\Phase;
 use App\Models\Pronostic;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -22,13 +23,20 @@ class PronosticController extends Controller
                 ->get()
             : collect();
 
+        $estAFaire = fn (MatchGame $match) => ! $match->resultat_saisi && ! $match->isVerrouille() && ! $match->pronostics->first();
+
+        $matchesAFaire = $matches->filter($estAFaire)->values();
+        $matchesTraites = $matches->reject($estAFaire)->values();
+
         return view('pronostics.index', [
             'phase' => $phase,
             'matches' => $matches,
+            'matchesAFaire' => $matchesAFaire,
+            'matchesTraites' => $matchesTraites,
         ]);
     }
 
-    public function store(Request $request, MatchGame $match): RedirectResponse
+    public function store(Request $request, MatchGame $match): RedirectResponse|JsonResponse
     {
         abort_if($match->isVerrouille(), 403, 'Ce match est verrouillé, le pronostic ne peut plus être modifié.');
 
@@ -45,6 +53,15 @@ class PronosticController extends Controller
                 'prono_score_j2' => $data['prono_score_j2'],
             ]
         );
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Pronostic enregistré.',
+                'match_id' => $match->id,
+                'prono_score_j1' => $data['prono_score_j1'],
+                'prono_score_j2' => $data['prono_score_j2'],
+            ]);
+        }
 
         return back()->with('status', 'Pronostic enregistré.');
     }

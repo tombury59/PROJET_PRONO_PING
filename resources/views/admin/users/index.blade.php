@@ -19,8 +19,8 @@
                 </div>
             @endif
 
-            <x-card class="overflow-hidden p-0">
-                <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+            <x-responsive-table>
+                <x-slot:table>
                     <thead class="bg-neutral-50 dark:bg-neutral-800">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Pseudo</th>
@@ -93,8 +93,70 @@
                             </tr>
                         @endforelse
                     </tbody>
-                </table>
-            </x-card>
+                </x-slot:table>
+
+                <x-slot:cards>
+                    @forelse ($users as $user)
+                        <x-card class="p-4">
+                            <div class="flex items-center justify-between gap-2">
+                                <p class="text-sm font-medium text-neutral-900 dark:text-white">
+                                    {{ $user->pseudo }}
+                                    @if ($user->id === auth()->id())
+                                        <span class="ml-1 text-xs text-neutral-400">(toi)</span>
+                                    @endif
+                                </p>
+
+                                @if ($user->id === auth()->id())
+                                    <span class="shrink-0 rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                                        {{ $user->isAdmin() ? 'Admin' : 'Joueur' }}
+                                    </span>
+                                @else
+                                    <form method="POST" action="{{ route('admin.users.role.update', $user) }}" class="shrink-0">
+                                        @csrf
+                                        @method('PATCH')
+                                        <select
+                                            name="role"
+                                            onchange="this.form.submit()"
+                                            class="rounded-md border-neutral-300 py-1 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                        >
+                                            <option value="joueur" @selected(! $user->isAdmin())>Joueur</option>
+                                            <option value="admin" @selected($user->isAdmin())>Admin</option>
+                                        </select>
+                                    </form>
+                                @endif
+                            </div>
+
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                                Inscrit le {{ $user->created_at->format('d/m/Y') }}
+                            </p>
+
+                            <div class="mt-3 flex items-center justify-between gap-2 border-t border-neutral-100 pt-3 dark:border-neutral-800">
+                                <span class="text-xs text-neutral-500 dark:text-neutral-400">
+                                    {{ $user->pronostics_count }} pronostics · {{ $user->reponses_bonus_count }} réponses bonus
+                                </span>
+
+                                @unless ($user->id === auth()->id())
+                                    <form
+                                        method="POST"
+                                        action="{{ route('admin.users.destroy', $user) }}"
+                                        onsubmit="return confirm('Supprimer {{ $user->pseudo }} ? Ses pronostics et réponses bonus seront aussi supprimés.');"
+                                    >
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs font-semibold uppercase tracking-widest text-red-600 hover:text-red-500 dark:text-red-400">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                @endunless
+                            </div>
+                        </x-card>
+                    @empty
+                        <x-card class="p-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                            Aucun utilisateur inscrit.
+                        </x-card>
+                    @endforelse
+                </x-slot:cards>
+            </x-responsive-table>
         </div>
     </div>
 </x-app-layout>

@@ -46,8 +46,8 @@
                 </form>
             @endif
 
-            <x-card class="overflow-hidden p-0">
-                <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+            <x-responsive-table>
+                <x-slot:table>
                     <thead class="bg-neutral-50 dark:bg-neutral-800">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Question</th>
@@ -102,8 +102,55 @@
                             </tr>
                         @endforelse
                     </tbody>
-                </table>
-            </x-card>
+                </x-slot:table>
+
+                <x-slot:cards>
+                    @forelse ($questions as $question)
+                        <x-card class="p-4">
+                            <p class="text-sm font-medium text-neutral-900 dark:text-white">
+                                {{ $question->question }}
+                            </p>
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                                {{ $question->match ? $question->match->equipe1().' vs '.$question->match->equipe2() : '—' }}
+                            </p>
+
+                            <div class="mt-3 flex items-center justify-between gap-2">
+                                @if ($question->reponse_correcte)
+                                    <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/40 dark:text-green-400">
+                                        Résolue : {{ $question->reponse_correcte }}
+                                    </span>
+                                @else
+                                    <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                                        En attente
+                                    </span>
+                                @endif
+
+                                <span class="text-xs text-neutral-500 dark:text-neutral-400">
+                                    {{ $question->reponses_count }} réponses
+                                </span>
+                            </div>
+
+                            <div class="mt-3 flex items-center gap-3 border-t border-neutral-100 pt-3 text-xs font-semibold uppercase tracking-widest dark:border-neutral-800">
+                                <a href="{{ route('admin.questions-bonus.edit', $question) }}" class="text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
+                                    Modifier
+                                </a>
+
+                                <form method="POST" action="{{ route('admin.questions-bonus.destroy', $question) }}" onsubmit="return confirm('Supprimer cette question ?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-500 dark:text-red-400">
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </x-card>
+                    @empty
+                        <x-card class="p-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                            Aucune question bonus pour cette phase.
+                        </x-card>
+                    @endforelse
+                </x-slot:cards>
+            </x-responsive-table>
         </div>
     </div>
 </x-app-layout>

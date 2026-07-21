@@ -42,8 +42,8 @@
                 </div>
             @endif
 
-            <div class="overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
-                <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+            <x-responsive-table>
+                <x-slot:table>
                     <thead class="bg-neutral-50 dark:bg-neutral-800">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Rang</th>
@@ -75,8 +75,33 @@
                             </tr>
                         @endforelse
                     </tbody>
-                </table>
-            </div>
+                </x-slot:table>
+
+                <x-slot:cards>
+                    @forelse ($classement as $i => $entree)
+                        <x-card class="flex items-center justify-between p-4 {{ $entree['user']->id === auth()->id() ? 'bg-neutral-50 dark:bg-neutral-800/60' : '' }}">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                                    #{{ $i + 1 }}
+                                </span>
+                                <span class="text-sm font-medium text-neutral-900 dark:text-white">
+                                    {{ $entree['user']->pseudo }}
+                                    @if ($entree['user']->id === auth()->id())
+                                        <span class="ml-1 text-xs text-neutral-400">(toi)</span>
+                                    @endif
+                                </span>
+                            </div>
+                            <span class="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                                {{ $entree['points'] }}
+                            </span>
+                        </x-card>
+                    @empty
+                        <x-card class="p-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                            Aucun classement disponible pour l'instant.
+                        </x-card>
+                    @endforelse
+                </x-slot:cards>
+            </x-responsive-table>
             </x-card>
         </div>
     </div>

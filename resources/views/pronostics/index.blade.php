@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 ">
-        <div class="mx-auto max-w-5xl space-y-4 sm:px-6 lg:px-8">
+    <div class="py-12">
+        <div class="mx-auto max-w-5xl space-y-8 sm:px-6 lg:px-8">
             @if (session('status'))
                 <div class="rounded-md bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400">
                     {{ session('status') }}
@@ -22,95 +22,359 @@
                     Aucun match programmé pour cette phase.
                 </div>
             @else
-                @foreach ($matches as $match)
-                    @php($prono = $match->pronostics->first())
-                    @php($verrouille = $match->isVerrouille())
+                @if ($matchesAFaire->isNotEmpty())
+                    <section>
+                        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+                            À pronostiquer
+                        </h3>
 
-                    <x-card class="p-6">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <div>
-                                <p class="font-semibold text-neutral-900 dark:text-white">
-                                    {{ $match->equipe1() }} vs {{ $match->equipe2() }}
-                                </p>
-                                <p class="text-sm text-neutral-500 dark:text-neutral-400">
-                                    {{ $match->date_heure->format('d/m/Y H:i') }}
-                                </p>
-                            </div>
+                        <div class="pronostic-swiper swiper mx-auto h-96 w-full max-w-sm">
+                            <div class="swiper-wrapper">
+                                @foreach ($matchesAFaire as $match)
+                                    <div class="swiper-slide">
+                                        <x-card class="flex h-full flex-col p-6">
+                                            <div class="text-center">
+                                                <p class="text-lg font-semibold text-neutral-900 dark:text-white">
+                                                    {{ $match->equipe1() }}
+                                                </p>
+                                                <p class="my-1 text-xs font-medium uppercase tracking-wide text-neutral-400">
+                                                    vs
+                                                </p>
+                                                <p class="text-lg font-semibold text-neutral-900 dark:text-white">
+                                                    {{ $match->equipe2() }}
+                                                </p>
+                                                <p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+                                                    {{ $match->date_heure->format('d/m/Y H:i') }}
+                                                </p>
+                                            </div>
 
-                            <div class="flex items-center gap-2">
-                                @if ($match->resultat_saisi)
-                                    <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/40 dark:text-green-400">
-                                        Résultat : {{ $match->score_j1 }} - {{ $match->score_j2 }}
-                                    </span>
-                                    @if ($prono)
-                                        <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
-                                            {{ $prono->points_obtenus ?? 0 }} pt(s)
-                                        </span>
-                                    @endif
-                                @elseif ($verrouille)
-                                    <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
-                                        Verrouillé
-                                    </span>
-                                @endif
+                                            <form
+                                                method="POST"
+                                                action="{{ route('pronostics.store', $match) }}"
+                                                x-data="pronosticCard()"
+                                                @submit.prevent="submit({{ $match->id }})"
+                                                class="mt-auto flex flex-col items-center gap-4"
+                                            >
+                                                @csrf
+
+                                                <div class="flex items-end justify-center gap-3">
+                                                    <div>
+                                                        <x-input-label :for="'af_score_j1_'.$match->id" :value="$match->equipe1()" />
+                                                        <input
+                                                            id="af_score_j1_{{ $match->id }}"
+                                                            name="prono_score_j1"
+                                                            type="number"
+                                                            min="0"
+                                                            max="3"
+                                                            x-model="scoreJ1"
+                                                            required
+                                                            class="mt-1 block w-20 rounded-md border-neutral-300 text-center shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                                        />
+                                                    </div>
+
+                                                    <span class="pb-2 text-neutral-400">—</span>
+
+                                                    <div>
+                                                        <x-input-label :for="'af_score_j2_'.$match->id" :value="$match->equipe2()" />
+                                                        <input
+                                                            id="af_score_j2_{{ $match->id }}"
+                                                            name="prono_score_j2"
+                                                            type="number"
+                                                            min="0"
+                                                            max="3"
+                                                            x-model="scoreJ2"
+                                                            required
+                                                            class="mt-1 block w-20 rounded-md border-neutral-300 text-center shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <p x-cloak x-show="error" x-text="error" class="text-sm text-red-600 dark:text-red-400"></p>
+
+                                                <x-primary-button x-bind:disabled="loading">
+                                                    <span x-show="!loading">Valider</span>
+                                                    <span x-cloak x-show="loading">Enregistrement…</span>
+                                                </x-primary-button>
+                                            </form>
+                                        </x-card>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
 
-                        @if ($match->resultat_saisi)
-                            <p class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
-                                Résultat : {{ $match->score_j1 }} - {{ $match->score_j2 }}
-                            </p>
-                        @else
-                            <form
-                                method="POST"
-                                action="{{ route('pronostics.store', $match) }}"
-                                class="mt-4 flex flex-wrap items-end gap-3"
+                        <div class="mt-4 flex items-center justify-center gap-6">
+                            <button
+                                type="button"
+                                data-swiper-prev
+                                class="rounded-full p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
                             >
-                                @csrf
+                                <span class="sr-only">Match précédent</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                                    <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 0 1 0 1.06L9.06 10l3.73 3.71a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
 
-                                <div>
-                                    <x-input-label :for="'score_j1_'.$match->id" :value="$match->equipe1()" />
-                                    <input
-                                        id="score_j1_{{ $match->id }}"
-                                        name="prono_score_j1"
-                                        type="number"
-                                        min="0"
-                                        max="3"
-                                        value="{{ old('prono_score_j1', $prono->prono_score_j1 ?? '') }}"
-                                        @disabled($verrouille)
-                                        class="mt-1 block w-20 rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-neutral-100 disabled:text-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:disabled:bg-neutral-900"
-                                        required
-                                    />
-                                </div>
+                            <span class="text-xs text-neutral-400">
+                                Glisse ou utilise les flèches pour naviguer entre les matchs
+                            </span>
 
-                                <span class="pb-2 text-neutral-400">—</span>
+                            <button
+                                type="button"
+                                data-swiper-next
+                                class="rounded-full p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
+                            >
+                                <span class="sr-only">Match suivant</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 0 1 0-1.06L10.94 10 7.21 6.29a.75.75 0 1 1 1.06-1.06l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </section>
+                @endif
 
-                                <div>
-                                    <x-input-label :for="'score_j2_'.$match->id" :value="$match->equipe2()" />
-                                    <input
-                                        id="score_j2_{{ $match->id }}"
-                                        name="prono_score_j2"
-                                        type="number"
-                                        min="0"
-                                        max="3"
-                                        value="{{ old('prono_score_j2', $prono->prono_score_j2 ?? '') }}"
-                                        @disabled($verrouille)
-                                        class="mt-1 block w-20 rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-neutral-100 disabled:text-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:disabled:bg-neutral-900"
-                                        required
-                                    />
-                                </div>
+                @if ($matchesTraites->isNotEmpty())
+                    <section>
+                        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+                            Mes pronostics
+                        </h3>
 
-                                @unless ($verrouille)
-                                    <x-primary-button>
-                                        {{ $prono ? 'Modifier' : 'Valider' }}
-                                    </x-primary-button>
-                                @endunless
-                            </form>
-                        @endif
-                        <x-input-error :messages="$errors->get('prono_score_j1')" class="mt-2" />
-                        <x-input-error :messages="$errors->get('prono_score_j2')" class="mt-2" />
-                    </x-card>
-                @endforeach
+                        <x-responsive-table>
+                            <x-slot:table>
+                                <thead class="bg-neutral-50 dark:bg-neutral-800">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Match</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Pronostic</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Statut</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">
+                                    @foreach ($matchesTraites as $match)
+                                        @php($prono = $match->pronostics->first())
+                                        @php($verrouille = $match->isVerrouille())
+                                        @php($modifiable = $prono && ! $verrouille && ! $match->resultat_saisi)
+
+                                        <tr
+                                            @if ($modifiable)
+                                                x-data="pronosticRow({{ $prono->prono_score_j1 }}, {{ $prono->prono_score_j2 }})"
+                                            @endif
+                                        >
+                                            <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-neutral-900 dark:text-white">
+                                                {{ $match->equipe1() }} vs {{ $match->equipe2() }}
+                                            </td>
+                                            <td class="whitespace-nowrap px-6 py-4 text-sm text-neutral-500 dark:text-neutral-400">
+                                                {{ $match->date_heure->format('d/m/Y H:i') }}
+                                            </td>
+
+                                            @if ($modifiable)
+                                                <td class="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300">
+                                                    <span x-cloak x-show="!editing" x-text="savedScoreJ1 + ' - ' + savedScoreJ2"></span>
+                                                    <form
+                                                        x-cloak
+                                                        x-show="editing"
+                                                        @submit.prevent="submit({{ $match->id }})"
+                                                        class="flex items-center gap-2"
+                                                    >
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            max="3"
+                                                            x-model="scoreJ1"
+                                                            required
+                                                            class="block w-16 rounded-md border-neutral-300 text-center text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                                        />
+                                                        <span class="text-neutral-400">—</span>
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            max="3"
+                                                            x-model="scoreJ2"
+                                                            required
+                                                            class="block w-16 rounded-md border-neutral-300 text-center text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                                        />
+
+                                                        <button
+                                                            type="submit"
+                                                            x-bind:disabled="loading"
+                                                            class="text-xs font-semibold uppercase tracking-widest text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+                                                        >
+                                                            <span x-show="!loading">Enregistrer</span>
+                                                            <span x-cloak x-show="loading">…</span>
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            @click="cancelEdit()"
+                                                            class="text-xs font-semibold uppercase tracking-widest text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+                                                        >
+                                                            Annuler
+                                                        </button>
+                                                    </form>
+                                                    <p x-cloak x-show="error" x-text="error" class="mt-1 text-xs text-red-600 dark:text-red-400"></p>
+                                                </td>
+                                            @else
+                                                <td class="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300">
+                                                    @if ($prono)
+                                                        {{ $prono->prono_score_j1 }} - {{ $prono->prono_score_j2 }}
+                                                    @else
+                                                        <span class="text-neutral-400">—</span>
+                                                    @endif
+                                                </td>
+                                            @endif
+
+                                            <td class="whitespace-nowrap px-6 py-4">
+                                                @if ($match->resultat_saisi)
+                                                    <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/40 dark:text-green-400">
+                                                        Résultat : {{ $match->score_j1 }} - {{ $match->score_j2 }}
+                                                    </span>
+                                                    @if ($prono)
+                                                        <span class="ml-1 rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                                                            {{ $prono->points_obtenus ?? 0 }} pt(s)
+                                                        </span>
+                                                    @endif
+                                                @elseif ($verrouille)
+                                                    <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+                                                        Verrouillé
+                                                    </span>
+                                                @else
+                                                    <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                                                        En attente du résultat
+                                                    </span>
+                                                @endif
+                                            </td>
+
+                                            <td class="whitespace-nowrap px-6 py-4 text-right">
+                                                @if ($modifiable)
+                                                    <button
+                                                        type="button"
+                                                        x-cloak
+                                                        x-show="!editing"
+                                                        @click="startEdit()"
+                                                        class="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+                                                    >
+                                                        Modifier
+                                                    </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </x-slot:table>
+
+                            <x-slot:cards>
+                                @foreach ($matchesTraites as $match)
+                                @php($prono = $match->pronostics->first())
+                                @php($verrouille = $match->isVerrouille())
+                                @php($modifiable = $prono && ! $verrouille && ! $match->resultat_saisi)
+
+                                <x-card
+                                    class="p-4"
+                                    x-data="{{ $modifiable ? 'pronosticRow('.$prono->prono_score_j1.', '.$prono->prono_score_j2.')' : '{}' }}"
+                                >
+                                    <div class="flex items-start justify-between gap-2">
+                                        <div>
+                                            <p class="text-sm font-medium text-neutral-900 dark:text-white">
+                                                {{ $match->equipe1() }} vs {{ $match->equipe2() }}
+                                            </p>
+                                            <p class="text-xs text-neutral-500 dark:text-neutral-400">
+                                                {{ $match->date_heure->format('d/m/Y H:i') }}
+                                            </p>
+                                        </div>
+
+                                        @if ($match->resultat_saisi)
+                                            <span class="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/40 dark:text-green-400">
+                                                {{ $match->score_j1 }} - {{ $match->score_j2 }}
+                                            </span>
+                                        @elseif ($verrouille)
+                                            <span class="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+                                                Verrouillé
+                                            </span>
+                                        @else
+                                            <span class="shrink-0 rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                                                En attente
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <div class="mt-3 flex items-center justify-between gap-2 border-t border-neutral-100 pt-3 dark:border-neutral-800">
+                                        @if ($modifiable)
+                                            <span x-cloak x-show="!editing" class="text-sm text-neutral-700 dark:text-neutral-300">
+                                                Pronostic : <span x-text="savedScoreJ1 + ' - ' + savedScoreJ2"></span>
+                                            </span>
+                                            <button
+                                                type="button"
+                                                x-cloak
+                                                x-show="!editing"
+                                                @click="startEdit()"
+                                                class="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+                                            >
+                                                Modifier
+                                            </button>
+
+                                            <form
+                                                x-cloak
+                                                x-show="editing"
+                                                @submit.prevent="submit({{ $match->id }})"
+                                                class="flex w-full flex-wrap items-center gap-2"
+                                            >
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    max="3"
+                                                    x-model="scoreJ1"
+                                                    required
+                                                    class="block w-16 rounded-md border-neutral-300 text-center text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                                />
+                                                <span class="text-neutral-400">—</span>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    max="3"
+                                                    x-model="scoreJ2"
+                                                    required
+                                                    class="block w-16 rounded-md border-neutral-300 text-center text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                                                />
+
+                                                <button
+                                                    type="submit"
+                                                    x-bind:disabled="loading"
+                                                    class="text-xs font-semibold uppercase tracking-widest text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+                                                >
+                                                    <span x-show="!loading">Enregistrer</span>
+                                                    <span x-cloak x-show="loading">…</span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    @click="cancelEdit()"
+                                                    class="text-xs font-semibold uppercase tracking-widest text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+                                                >
+                                                    Annuler
+                                                </button>
+
+                                                <p x-cloak x-show="error" x-text="error" class="w-full text-xs text-red-600 dark:text-red-400"></p>
+                                            </form>
+                                        @elseif ($prono)
+                                            <span class="text-sm text-neutral-700 dark:text-neutral-300">
+                                                Pronostic : {{ $prono->prono_score_j1 }} - {{ $prono->prono_score_j2 }}
+                                            </span>
+                                            @if ($match->resultat_saisi)
+                                                <span class="text-xs text-neutral-500 dark:text-neutral-400">
+                                                    {{ $prono->points_obtenus ?? 0 }} pt(s)
+                                                </span>
+                                            @endif
+                                        @else
+                                            <span class="text-sm text-neutral-400">Pas de pronostic</span>
+                                        @endif
+                                    </div>
+                                </x-card>
+                            @endforeach
+                            </x-slot:cards>
+                        </x-responsive-table>
+                    </section>
+                @endif
             @endif
         </div>
     </div>
+
+    @vite(['resources/js/pronostics.js'])
 </x-app-layout>

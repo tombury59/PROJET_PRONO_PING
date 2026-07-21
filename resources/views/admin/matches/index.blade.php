@@ -46,8 +46,8 @@
                 </form>
             @endif
 
-            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-neutral-900">
-                <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+            <x-responsive-table>
+                <x-slot:table>
                     <thead class="bg-neutral-50 dark:bg-neutral-800">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Match</th>
@@ -102,8 +102,55 @@
                             </tr>
                         @endforelse
                     </tbody>
-                </table>
-            </div>
+                </x-slot:table>
+
+                <x-slot:cards>
+                    @forelse ($matches as $match)
+                        <x-card class="p-4">
+                            <p class="text-sm font-medium text-neutral-900 dark:text-white">
+                                {{ $match->equipe1() }} vs {{ $match->equipe2() }}
+                            </p>
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                                {{ $match->date_heure->format('d/m/Y H:i') }}
+                            </p>
+
+                            <div class="mt-3 flex items-center justify-between gap-2">
+                                @if ($match->resultat_saisi)
+                                    <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/40 dark:text-green-400">
+                                        {{ $match->score_j1 }} - {{ $match->score_j2 }}
+                                    </span>
+                                @else
+                                    <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                                        En attente
+                                    </span>
+                                @endif
+
+                                <span class="text-xs text-neutral-500 dark:text-neutral-400">
+                                    {{ $match->pronostics_count }} pronostics
+                                </span>
+                            </div>
+
+                            <div class="mt-3 flex items-center gap-3 border-t border-neutral-100 pt-3 text-xs font-semibold uppercase tracking-widest dark:border-neutral-800">
+                                <a href="{{ route('admin.matches.edit', $match) }}" class="text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
+                                    Modifier
+                                </a>
+
+                                <form method="POST" action="{{ route('admin.matches.destroy', $match) }}" onsubmit="return confirm('Supprimer ce match ?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-500 dark:text-red-400">
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </x-card>
+                    @empty
+                        <x-card class="p-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                            Aucun match pour cette phase.
+                        </x-card>
+                    @endforelse
+                </x-slot:cards>
+            </x-responsive-table>
         </div>
     </div>
 </x-app-layout>
