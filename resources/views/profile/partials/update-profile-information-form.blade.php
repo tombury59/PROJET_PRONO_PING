@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-neutral-900 dark:text-white">
+        <h2 class="text-lg font-medium text-surface-900 dark:text-white">
             {{ __('Information du compte') }}
         </h2>
 
-        <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+        <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
             <!-- {{ __("Update your account's pseudo.") }} -->
             {{ __("Modifier votre pseudo.") }}
         </p>
@@ -30,7 +30,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-neutral-500 dark:text-neutral-400"
+                    class="text-sm text-surface-500 dark:text-surface-400"
                 >{{ __('Sauvegardé.') }}</p>
             @endif
         </div>

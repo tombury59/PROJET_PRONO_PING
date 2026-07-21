@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-neutral-900 dark:text-white">
+        <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
             Questions bonus {{ $phase ? '— '.$phase->nom : '' }}
         </h2>
     </x-slot>
@@ -8,17 +8,17 @@
     <div class="py-12">
         <div class="mx-auto max-w-3xl space-y-4 sm:px-6 lg:px-8">
             @if (session('status'))
-                <div class="rounded-md bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <div class="rounded-md bg-success-50 px-4 py-3 text-sm text-success-700 dark:bg-success-900/30 dark:text-success-400">
                     {{ session('status') }}
                 </div>
             @endif
 
             @if (! $phase)
-                <x-card class="p-6 text-sm text-neutral-500 dark:text-neutral-400">
+                <x-card class="p-6 text-sm text-surface-500 dark:text-surface-400">
                     Aucune phase en cours pour le moment.
                 </x-card>
             @elseif ($questions->isEmpty())
-                <x-card class="p-6 text-sm text-neutral-500 dark:text-neutral-400">
+                <x-card class="p-6 text-sm text-surface-500 dark:text-surface-400">
                     Aucune question bonus pour cette phase pour l'instant.
                 </x-card>
             @else
@@ -29,22 +29,22 @@
                     <x-card class="p-6">
                         <div class="flex flex-wrap items-start justify-between gap-2">
                             <div>
-                                <p class="font-semibold text-neutral-900 dark:text-white">
+                                <p class="font-semibold text-surface-900 dark:text-white">
                                     {{ $question->question }}
                                 </p>
                                 @if ($question->match)
-                                    <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+                                    <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
                                         Lié au match {{ $question->match->equipe1() }} vs {{ $question->match->equipe2() }}
                                     </p>
                                 @endif
                             </div>
 
                             @if ($resolue)
-                                <span class="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/40 dark:text-green-400">
+                                <span class="shrink-0 rounded-full bg-success-100 px-2 py-0.5 text-xs font-medium text-success-700 dark:bg-success-900/40 dark:text-success-400">
                                     Résolue : {{ $question->reponse_correcte }}
                                 </span>
                             @else
-                                <span class="shrink-0 rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                                <span class="shrink-0 rounded-full bg-surface-100 px-2 py-0.5 text-xs font-medium text-surface-600 dark:bg-surface-800 dark:text-surface-400">
                                     Ouverte
                                 </span>
                             @endif
@@ -74,7 +74,7 @@
                         </form>
 
                         @if ($resolue && $reponse)
-                            <p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+                            <p class="mt-2 text-sm text-surface-500 dark:text-surface-400">
                                 Tu as répondu « {{ $reponse->reponse }} » — {{ $reponse->points_obtenus ?? 0 }} point(s).
                             </p>
                         @endif

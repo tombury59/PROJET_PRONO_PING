@@ -7,7 +7,7 @@
     <select
         id="phase_id"
         name="phase_id"
-        class="mt-1 block w-full rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+        class="mt-1 block w-full rounded-md border-surface-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
         required
     >
         <option value="">— Choisir une phase —</option>
@@ -28,9 +28,9 @@
             type="checkbox"
             x-model="double"
             x-on:change="if (! double) { $refs.partenaire1.value = ''; $refs.partenaire2.value = ''; }"
-            class="rounded border-neutral-300 text-neutral-900 shadow-sm focus:ring-neutral-500 dark:border-neutral-700"
+            class="rounded border-surface-300 text-surface-900 shadow-sm focus:ring-surface-500 dark:border-surface-700"
         />
-        <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Match en double (2 contre 2)</span>
+        <span class="text-sm font-medium text-surface-700 dark:text-surface-300">Match en double (2 contre 2)</span>
     </label>
 
     <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -119,7 +119,7 @@
             :value="old('date_fin_pronostics', optional($match->date_fin_pronostics ?? $dateHeurePreremplie?->copy()->subHour())->format('Y-m-d\TH:i'))"
             required
         />
-        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+        <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
             Pré-rempli à 1h avant le match, modifiable si besoin. Les pronostics sont ouverts dès la création du match.
         </p>
         <x-input-error :messages="$errors->get('date_fin_pronostics')" class="mt-2" />

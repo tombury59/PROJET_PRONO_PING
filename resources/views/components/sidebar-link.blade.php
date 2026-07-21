@@ -5,8 +5,8 @@
 
     $classes = 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ' .
         ($isActive
-            ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
-            : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/5');
+            ? 'bg-surface-900 text-white dark:bg-white dark:text-surface-900'
+            : 'text-surface-700 hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-white/5');
 @endphp
 
 <a

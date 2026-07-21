@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-neutral-900 dark:text-white">
+        <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
             Modifier le match
         </h2>
     </x-slot>
 
     <div class="space-y-6 py-12">
         <div class="mx-auto max-w-2xl sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg dark:bg-neutral-900">
-                <h3 class="mb-4 text-sm font-semibold text-neutral-900 dark:text-white">Informations</h3>
+            <div class="bg-white p-6 shadow-sm sm:rounded-lg dark:bg-surface-900">
+                <h3 class="mb-4 text-sm font-semibold text-surface-900 dark:text-white">Informations</h3>
 
                 <form method="POST" action="{{ route('admin.matches.update', $match) }}">
                     @csrf
@@ -18,7 +18,7 @@
 
                     <div class="mt-6 flex items-center gap-3">
                         <x-primary-button>Enregistrer</x-primary-button>
-                        <a href="{{ route('admin.matches.index', ['phase_id' => $match->phase_id]) }}" class="text-sm text-neutral-600 hover:underline dark:text-neutral-300">
+                        <a href="{{ route('admin.matches.index', ['phase_id' => $match->phase_id]) }}" class="text-sm text-surface-600 hover:underline dark:text-surface-300">
                             Annuler
                         </a>
                     </div>
@@ -27,9 +27,9 @@
         </div>
 
         <div class="mx-auto max-w-2xl sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg dark:bg-neutral-900">
-                <h3 class="mb-1 text-sm font-semibold text-neutral-900 dark:text-white">Résultat</h3>
-                <p class="mb-4 text-sm text-neutral-500 dark:text-neutral-400">
+            <div class="bg-white p-6 shadow-sm sm:rounded-lg dark:bg-surface-900">
+                <h3 class="mb-1 text-sm font-semibold text-surface-900 dark:text-white">Résultat</h3>
+                <p class="mb-4 text-sm text-surface-500 dark:text-surface-400">
                     Valider le résultat calcule automatiquement les points de tous les pronostics liés à ce match.
                 </p>
 
@@ -73,7 +73,7 @@
                         </x-primary-button>
 
                         @if ($match->resultat_saisi)
-                            <span class="text-sm text-green-700 dark:text-green-400">Résultat déjà saisi</span>
+                            <span class="text-sm text-success-700 dark:text-success-400">Résultat déjà saisi</span>
                         @endif
                     </div>
                 </form>

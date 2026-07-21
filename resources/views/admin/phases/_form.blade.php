@@ -48,7 +48,7 @@
         name="reset_classement"
         type="checkbox"
         value="1"
-        class="rounded border-neutral-300 text-neutral-900 shadow-sm focus:ring-neutral-500 dark:border-neutral-700"
+        class="rounded border-surface-300 text-surface-900 shadow-sm focus:ring-surface-500 dark:border-surface-700"
         @checked(old('reset_classement', $phase->reset_classement ?? true))
     />
     <x-input-label for="reset_classement" value="Réinitialiser le classement au début de cette phase" />

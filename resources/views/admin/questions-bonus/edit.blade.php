@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-neutral-900 dark:text-white">
+        <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
             Modifier la question bonus
         </h2>
     </x-slot>
@@ -16,7 +16,7 @@
 
                     <div class="mt-6 flex items-center gap-3">
                         <x-primary-button>Enregistrer</x-primary-button>
-                        <a href="{{ route('admin.questions-bonus.index') }}" class="text-sm text-neutral-600 hover:underline dark:text-neutral-300">
+                        <a href="{{ route('admin.questions-bonus.index') }}" class="text-sm text-surface-600 hover:underline dark:text-surface-300">
                             Annuler
                         </a>
                     </div>

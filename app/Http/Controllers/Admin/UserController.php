@@ -11,13 +11,19 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $users = User::withCount(['pronostics', 'reponsesBonus'])
-            ->orderBy('pseudo')
-            ->get();
+        $search = trim((string) $request->query('search', ''));
 
-        return view('admin.users.index', ['users' => $users]);
+        $perPage = $request->cookie('viewport') === 'mobile' ? 5 : 10;
+
+        $users = User::withCount(['pronostics', 'reponsesBonus'])
+            ->when($search !== '', fn ($query) => $query->where('pseudo', 'like', '%'.$search.'%'))
+            ->orderBy('pseudo')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return view('admin.users.index', ['users' => $users, 'search' => $search]);
     }
 
     public function updateRole(Request $request, User $user): RedirectResponse

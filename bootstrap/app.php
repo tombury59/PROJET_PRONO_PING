@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
         ]);
+
+        // Cookie non chiffré, posé côté JS pour indiquer au serveur la largeur d'écran (voir resources/js/app.js).
+        $middleware->encryptCookies(except: ['viewport']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

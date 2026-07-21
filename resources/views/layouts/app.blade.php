@@ -8,8 +8,7 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        @include('layouts.partials.fonts')
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -21,7 +20,7 @@
                 sidebarOpen: JSON.parse(localStorage.getItem('sidebar-open') ?? 'true'),
             }"
             x-effect="localStorage.setItem('sidebar-open', JSON.stringify(sidebarOpen))"
-            class="relative flex w-full bg-white dark:bg-neutral-950"
+            class="relative flex w-full bg-white dark:bg-surface-950"
         >
             <!-- This allows screen readers to skip the sidebar and go directly to the main content. -->
             <a class="sr-only" href="#main-content">passer au contenu principal</a>
@@ -32,7 +31,7 @@
                 x-show="mobileOpen"
                 x-transition.opacity
                 @click="mobileOpen = false"
-                class="fixed inset-0 z-20 bg-neutral-950/10 backdrop-blur-xs lg:hidden"
+                class="fixed inset-0 z-20 bg-surface-950/10 backdrop-blur-xs lg:hidden"
                 aria-hidden="true"
             ></div>
 
@@ -40,22 +39,22 @@
 
             <div class="flex h-svh w-full flex-col overflow-y-auto">
                 <!-- Mobile top bar -->
-                <div class="flex shrink-0 items-center gap-3 border-b border-neutral-200 bg-white px-4 py-3 lg:hidden dark:border-neutral-800 dark:bg-neutral-950">
+                <div class="flex shrink-0 items-center gap-3 border-b border-surface-200 bg-white px-4 py-3 lg:hidden dark:border-surface-800 dark:bg-surface-950">
                     <button
                         @click="mobileOpen = true"
-                        class="rounded-sm p-1.5 text-neutral-600 hover:bg-black/5 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-white/5 dark:hover:text-white"
+                        class="rounded-sm p-1.5 text-surface-600 hover:bg-black/5 hover:text-surface-900 dark:text-surface-300 dark:hover:bg-white/5 dark:hover:text-white"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5" aria-hidden="true">
                             <path fill-rule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75Zm0 10.5a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Z" clip-rule="evenodd" />
                         </svg>
                         <span class="sr-only">ouvrir le menu</span>
                     </button>
-                    <span class="mr-auto font-semibold text-neutral-900 dark:text-white">{{ config('app.name') }}</span>
+                    <span class="mr-auto font-semibold text-surface-900 dark:text-white">{{ config('app.name') }}</span>
 
                     @include('layouts.partials.notification-bell')
                 </div>
 
-                <header class="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+                <header class="border-b border-surface-200 bg-white dark:border-surface-800 dark:bg-surface-950">
                     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
                         <div class="min-w-0 flex-1">
                             @isset($header)

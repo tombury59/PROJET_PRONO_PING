@@ -5,7 +5,7 @@
     <select
         id="phase_id"
         name="phase_id"
-        class="mt-1 block w-full rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+        class="mt-1 block w-full rounded-md border-surface-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
         required
     >
         <option value="">— Choisir une phase —</option>
@@ -23,7 +23,7 @@
     <select
         id="match_id"
         name="match_id"
-        class="mt-1 block w-full rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+        class="mt-1 block w-full rounded-md border-surface-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
     >
         <option value="">— Aucun (question générale de phase) —</option>
         @foreach ($matches as $match)
@@ -41,7 +41,7 @@
         id="question"
         name="question"
         rows="2"
-        class="mt-1 block w-full rounded-md border-neutral-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+        class="mt-1 block w-full rounded-md border-surface-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
         required
     >{{ old('question', $question->question ?? '') }}</textarea>
     <x-input-error :messages="$errors->get('question')" class="mt-2" />
@@ -56,7 +56,7 @@
         class="mt-1 block w-full"
         :value="old('reponse_correcte', $question->reponse_correcte ?? '')"
     />
-    <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+    <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
         Laisse vide tant que tu ne connais pas la réponse : la question reste ouverte aux joueurs.
         Dès que tu la renseignes, les points (5) sont calculés automatiquement pour tous ceux qui ont déjà répondu.
     </p>

@@ -1,6 +1,6 @@
 <div>
-    <div class="hidden overflow-hidden rounded-lg border border-neutral-200 bg-white md:block dark:border-neutral-800 dark:bg-neutral-900">
-        <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800">
+    <div class="hidden overflow-hidden rounded-lg border border-surface-200 bg-white md:block dark:border-surface-800 dark:bg-surface-900">
+        <table class="min-w-full divide-y divide-surface-200 dark:divide-surface-800">
             {{ $table }}
         </table>
     </div>

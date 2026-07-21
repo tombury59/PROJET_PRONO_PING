@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-neutral-900 dark:text-white">
+        <h2 class="text-lg font-medium text-surface-900 dark:text-white">
             {{ __('Mettre à jour le mot de passe') }}
         </h2>
 
-        <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+        <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
             <!-- {{ __('Ensure your account is using a long, random password to stay secure.') }} -->
             {{ __('Assurez-vous que votre compte utilise un mot de passe long et aléatoire pour rester sécurisé.') }}
         </p>
@@ -41,7 +41,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-neutral-500 dark:text-neutral-400"
+                    class="text-sm text-surface-500 dark:text-surface-400"
                 >{{ __('Sauvegardé.') }}</p>
             @endif
         </div>
