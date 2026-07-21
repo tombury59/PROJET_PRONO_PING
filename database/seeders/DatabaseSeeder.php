@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            PhaseSeeder::class,
-            MatchSeeder::class,
-            PronosticSeeder::class,
-            QuestionBonusSeeder::class,
-            NotificationSeeder::class,
+            // FakePhaseSeeder::class,
+            // FakeMatchSeeder::class,
+            // FakePronosticSeeder::class,
+            // FakeQuestionBonusSeeder::class,
+            // FakeNotificationSeeder::class,
         ]);
     }
 }
