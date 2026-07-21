@@ -43,7 +43,7 @@ RUN npm run build
 ########################################
 # 3. Runtime image: PHP-FPM + Caddy
 ########################################
-FROM php:8.3-fpm-alpine AS app
+FROM php:8.4-fpm-alpine AS app
 
 # Caddy + supervisor to run php-fpm and caddy in a single container
 RUN apk add --no-cache caddy supervisor bash curl \
