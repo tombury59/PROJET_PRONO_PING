@@ -15,3 +15,9 @@ function syncViewportCookie() {
 
 syncViewportCookie();
 window.addEventListener('resize', syncViewportCookie);
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+}

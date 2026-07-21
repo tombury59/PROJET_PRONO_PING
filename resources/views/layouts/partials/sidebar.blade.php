@@ -62,13 +62,6 @@
             </svg>
         </x-sidebar-link>
 
-        <!-- Profil -->
-        <x-sidebar-link route="profile.edit" label="Profil">
-            <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-        </x-sidebar-link>
-
         <!-- Administration -->
         @if (auth()->user()?->isAdmin())
             <div class="mt-4 border-t border-surface-200 pt-4 dark:border-surface-800">
@@ -127,14 +120,19 @@
 
     <!-- User / logout -->
     <div class="shrink-0 border-t border-surface-200 p-3 dark:border-surface-800">
-        <div class="flex items-center gap-3 overflow-hidden px-1 py-1" x-bind:class="! sidebarOpen && 'lg:justify-center'">
+        <a
+            href="{{ route('profile.edit') }}"
+            @click="mobileOpen = false"
+            x-bind:class="! sidebarOpen && 'lg:justify-center'"
+            class="flex items-center gap-3 overflow-hidden rounded-md px-1 py-1 text-surface-700 transition-colors hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-white/5"
+        >
             <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-900 text-xs font-semibold text-white dark:bg-white dark:text-surface-900">
                 {{ auth()->check() ? strtoupper(substr(auth()->user()->pseudo, 0, 1)) : '?' }}
             </div>
-            <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate text-sm font-medium text-surface-700 dark:text-surface-300">
+            <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate text-sm font-medium">
                 {{ auth()->user()->pseudo ?? '' }}
             </span>
-        </div>
+        </a>
 
         <form method="POST" action="{{ route('logout') }}" class="mt-1">
             @csrf

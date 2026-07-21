@@ -6,6 +6,8 @@
 
         <title>{{ config('app.name') }}</title>
 
+        @include('layouts.partials.pwa')
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="antialiased bg-surface-50 text-surface-900">

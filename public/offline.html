@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hors ligne — Prono</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #ffffff;
+            color: #171717;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .card { max-width: 24rem; }
+        h1 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        p { color: #6b7280; margin: 0; }
+        button {
+            margin-top: 1.5rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.375rem;
+            border: none;
+            background: #4f46e5;
+            color: #fff;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+        @media (prefers-color-scheme: dark) {
+            body { background: #0a0a0a; color: #fafafa; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Pas de connexion</h1>
+        <p>Impossible de joindre le serveur pour le moment. Vérifie ta connexion et réessaie.</p>
+        <button onclick="location.reload()">Réessayer</button>
+    </div>
+</body>
+</html>

@@ -10,6 +10,9 @@
         <!-- Fonts -->
         @include('layouts.partials.fonts')
 
+        <!-- PWA -->
+        @include('layouts.partials.pwa')
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
