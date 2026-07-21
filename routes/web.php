@@ -55,6 +55,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         ->except('show')
         ->parameters(['questions-bonus' => 'question']);
 
+    Route::patch('questions-bonus/{question}/reponses/{reponse}', [AdminQuestionBonusController::class, 'accorderPoints'])
+        ->name('questions-bonus.reponses.update');
+
     Route::get('utilisateurs', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('utilisateurs/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role.update');
     Route::delete('utilisateurs/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');

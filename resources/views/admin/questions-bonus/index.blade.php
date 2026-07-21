@@ -57,8 +57,8 @@
                             <th class="px-6 py-3"></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-surface-200 dark:divide-surface-800">
-                        @forelse ($questions as $question)
+                    @forelse ($questions as $question)
+                        <tbody x-data="{ open: false }" class="divide-y divide-surface-200 dark:divide-surface-800">
                             <tr>
                                 <td class="max-w-xs px-6 py-4 text-sm font-medium text-surface-900 dark:text-white">
                                     {{ $question->question }}
@@ -78,7 +78,16 @@
                                     @endif
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-sm text-surface-600 dark:text-surface-300">
-                                    {{ $question->reponses_count }}
+                                    <button
+                                        type="button"
+                                        @click="open = !open"
+                                        class="inline-flex items-center gap-1 hover:text-surface-900 dark:hover:text-white"
+                                    >
+                                        {{ $question->reponses_count }}
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 transition-transform" :class="{ 'rotate-180': open }">
+                                            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
                                     <a href="{{ route('admin.questions-bonus.edit', $question) }}" class="font-medium text-surface-700 underline-offset-2 hover:underline dark:text-surface-300">
@@ -94,19 +103,26 @@
                                     </form>
                                 </td>
                             </tr>
-                        @empty
+                            <tr x-cloak x-show="open">
+                                <td colspan="5" class="bg-surface-50 px-6 py-4 dark:bg-surface-800/40">
+                                    @include('admin.questions-bonus.partials.reponses', ['question' => $question])
+                                </td>
+                            </tr>
+                        </tbody>
+                    @empty
+                        <tbody>
                             <tr>
                                 <td colspan="5" class="px-6 py-8 text-center text-sm text-surface-500 dark:text-surface-400">
                                     Aucune question bonus pour cette phase.
                                 </td>
                             </tr>
-                        @endforelse
-                    </tbody>
+                        </tbody>
+                    @endforelse
                 </x-slot:table>
 
                 <x-slot:cards>
                     @forelse ($questions as $question)
-                        <x-card class="p-4">
+                        <x-card class="p-4" x-data="{ open: false }">
                             <p class="text-sm font-medium text-surface-900 dark:text-white">
                                 {{ $question->question }}
                             </p>
@@ -125,9 +141,16 @@
                                     </span>
                                 @endif
 
-                                <span class="text-xs text-surface-500 dark:text-surface-400">
+                                <button type="button" @click="open = !open" class="inline-flex items-center gap-1 text-xs text-surface-500 hover:text-surface-900 dark:text-surface-400 dark:hover:text-white">
                                     {{ $question->reponses_count }} réponses
-                                </span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 transition-transform" :class="{ 'rotate-180': open }">
+                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div x-cloak x-show="open" class="mt-3 border-t border-surface-100 pt-3 dark:border-surface-800">
+                                @include('admin.questions-bonus.partials.reponses', ['question' => $question])
                             </div>
 
                             <div class="mt-3 flex items-center gap-3 border-t border-surface-100 pt-3 text-xs font-semibold uppercase tracking-widest dark:border-surface-800">

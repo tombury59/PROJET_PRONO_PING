@@ -116,6 +116,59 @@ class QuestionBonusControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
+    public function test_admin_can_grant_points_to_a_response_manually(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $question = QuestionBonus::factory()->create(['reponse_correcte' => 'Julien']);
+        $joueur = User::factory()->create();
+        $reponse = ReponseBonus::factory()->for($joueur)->for($question, 'questionBonus')->create([
+            'reponse' => 'Julien à un s en trop',
+            'points_obtenus' => 0,
+        ]);
+
+        $response = $this->actingAs($admin)->patch(
+            "/admin/questions-bonus/{$question->id}/reponses/{$reponse->id}",
+            ['accordee' => true]
+        );
+
+        $response->assertRedirect();
+        $this->assertSame(5, $reponse->fresh()->points_obtenus);
+    }
+
+    public function test_admin_can_revoke_points_from_a_response_manually(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $question = QuestionBonus::factory()->create(['reponse_correcte' => 'Julien']);
+        $joueur = User::factory()->create();
+        $reponse = ReponseBonus::factory()->for($joueur)->for($question, 'questionBonus')->create([
+            'reponse' => 'Julien',
+            'points_obtenus' => 5,
+        ]);
+
+        $response = $this->actingAs($admin)->patch(
+            "/admin/questions-bonus/{$question->id}/reponses/{$reponse->id}",
+            ['accordee' => false]
+        );
+
+        $response->assertRedirect();
+        $this->assertSame(0, $reponse->fresh()->points_obtenus);
+    }
+
+    public function test_admin_cannot_adjust_points_before_the_question_is_resolved(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $question = QuestionBonus::factory()->create(['reponse_correcte' => null]);
+        $joueur = User::factory()->create();
+        $reponse = ReponseBonus::factory()->for($joueur)->for($question, 'questionBonus')->create();
+
+        $response = $this->actingAs($admin)->patch(
+            "/admin/questions-bonus/{$question->id}/reponses/{$reponse->id}",
+            ['accordee' => true]
+        );
+
+        $response->assertForbidden();
+    }
+
     public function test_admin_cannot_delete_a_question_with_responses(): void
     {
         $admin = User::factory()->admin()->create();

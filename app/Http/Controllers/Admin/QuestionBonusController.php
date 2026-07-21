@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MatchGame;
 use App\Models\Phase;
 use App\Models\QuestionBonus;
+use App\Models\ReponseBonus;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class QuestionBonusController extends Controller
         $phases = Phase::orderByDesc('date_debut')->get();
         $selectedPhaseId = $request->integer('phase_id') ?: $phases->first()?->id;
 
-        $questions = QuestionBonus::with(['phase', 'match'])
+        $questions = QuestionBonus::with(['phase', 'match', 'reponses.user'])
             ->withCount('reponses')
             ->when($selectedPhaseId, fn ($query) => $query->where('phase_id', $selectedPhaseId))
             ->orderByDesc('id')
@@ -88,6 +89,20 @@ class QuestionBonusController extends Controller
 
         return redirect()->route('admin.questions-bonus.index', ['phase_id' => $question->phase_id])
             ->with('status', 'Question bonus mise à jour.');
+    }
+
+    public function accorderPoints(Request $request, QuestionBonus $question, ReponseBonus $reponse): RedirectResponse
+    {
+        abort_if($reponse->question_bonus_id !== $question->id, 404);
+        abort_if($question->reponse_correcte === null, 403, "Résous d'abord la question avant d'ajuster les points.");
+
+        $data = $request->validate([
+            'accordee' => ['required', 'boolean'],
+        ]);
+
+        $reponse->update(['points_obtenus' => $data['accordee'] ? 5 : 0]);
+
+        return back()->with('status', 'Points mis à jour pour '.$reponse->user->pseudo.'.');
     }
 
     public function destroy(QuestionBonus $question): RedirectResponse

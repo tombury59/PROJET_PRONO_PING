@@ -32,6 +32,38 @@ class ReponseBonus extends Model
             return 0;
         }
 
-        return mb_strtolower(trim($this->reponse)) === mb_strtolower(trim($reponseCorrecte)) ? 5 : 0;
+        return self::correspond($this->reponse, $reponseCorrecte) ? 5 : 0;
+    }
+
+    /**
+     * Compare deux réponses en tolérant les petites fautes de frappe
+     * (accents, casse, espaces, et une poignée de caractères d'écart
+     * proportionnelle à la longueur du mot attendu).
+     */
+    public static function correspond(string $reponse, string $attendue): bool
+    {
+        $normaliseeReponse = self::normaliser($reponse);
+        $normaliseeAttendue = self::normaliser($attendue);
+
+        if ($normaliseeReponse === $normaliseeAttendue) {
+            return true;
+        }
+
+        $toleranceMax = match (true) {
+            mb_strlen($normaliseeAttendue) <= 3 => 0,
+            mb_strlen($normaliseeAttendue) <= 6 => 1,
+            default => 2,
+        };
+
+        return $toleranceMax > 0 && levenshtein($normaliseeReponse, $normaliseeAttendue) <= $toleranceMax;
+    }
+
+    private static function normaliser(string $valeur): string
+    {
+        $valeur = mb_strtolower(trim($valeur));
+        $valeur = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $valeur) ?: $valeur;
+        $valeur = preg_replace('/[^a-z0-9]+/', ' ', $valeur);
+
+        return trim(preg_replace('/\s+/', ' ', $valeur));
     }
 }
