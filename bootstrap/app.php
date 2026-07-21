@@ -13,6 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Render (and the in-container Caddy) sit in front of PHP-FPM over
+        // a single, non-spoofable hop, so trust the forwarded headers to
+        // correctly detect HTTPS (secure cookies, url()/redirect() scheme).
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
         ]);
