@@ -30,10 +30,14 @@ class NotificationService
 
         // Le résultat est saisi : le rappel "résultat à déposer" pour ce
         // match n'a plus lieu d'être, pour aucun admin.
+        // Note : filtrage en PHP plutôt qu'en SQL car la colonne `data`
+        // est stockée en `text` et l'opérateur JSON natif (`->`) n'est
+        // pas portable entre MySQL et PostgreSQL sur ce type de colonne.
         DatabaseNotification::where('type', ResultatADeposer::class)
-            ->where('data->match_id', $match->id)
             ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+            ->get()
+            ->filter(fn (DatabaseNotification $notification) => ($notification->data['match_id'] ?? null) == $match->id)
+            ->each(fn (DatabaseNotification $notification) => $notification->update(['read_at' => now()]));
     }
 
     public function questionBonusCreee(QuestionBonus $question): void
