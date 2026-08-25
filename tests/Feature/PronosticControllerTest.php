@@ -28,16 +28,16 @@ class PronosticControllerTest extends TestCase
             'date_fin' => now()->addDays(5),
         ]);
         MatchGame::factory()->for($phase)->create([
-            'joueur_1' => 'Alice',
-            'joueur_2' => 'Bob',
+            'equipe_1' => 'Lille 2',
+            'equipe_2' => 'Roubaix 3',
             'date_heure' => now()->addDay(),
         ]);
 
         $response = $this->actingAs($user)->get('/pronostics');
 
         $response->assertOk();
-        $response->assertSee('Alice');
-        $response->assertSee('Bob');
+        $response->assertSee('Lille 2');
+        $response->assertSee('Roubaix 3');
     }
 
     public function test_user_can_submit_a_pronostic_for_an_unlocked_match(): void
@@ -103,16 +103,36 @@ class PronosticControllerTest extends TestCase
         ]);
     }
 
-    public function test_scores_cannot_be_equal(): void
+    public function test_a_draw_pronostic_is_allowed_and_sets_no_winner(): void
     {
         $user = User::factory()->create();
-        $match = MatchGame::factory()->create(['date_heure' => now()->addDays(2)]);
+        $match = MatchGame::factory()->create(['nb_matchs' => 18, 'date_heure' => now()->addDays(2)]);
 
         $response = $this->actingAs($user)->post("/pronostics/{$match->id}", [
-            'prono_score_j1' => 2,
-            'prono_score_j2' => 2,
+            'prono_score_j1' => 9,
+            'prono_score_j2' => 9,
         ]);
 
-        $response->assertSessionHasErrors('prono_score_j2');
+        $response->assertRedirect();
+        $this->assertDatabaseHas('pronostics', [
+            'user_id' => $user->id,
+            'match_id' => $match->id,
+            'prono_vainqueur' => 0,
+            'prono_score_j1' => 9,
+            'prono_score_j2' => 9,
+        ]);
+    }
+
+    public function test_pronostic_score_cannot_exceed_the_format(): void
+    {
+        $user = User::factory()->create();
+        $match = MatchGame::factory()->create(['nb_matchs' => 14, 'date_heure' => now()->addDays(2)]);
+
+        $response = $this->actingAs($user)->post("/pronostics/{$match->id}", [
+            'prono_score_j1' => 15,
+            'prono_score_j2' => 0,
+        ]);
+
+        $response->assertSessionHasErrors('prono_score_j1');
     }
 }

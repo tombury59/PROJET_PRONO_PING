@@ -14,8 +14,9 @@ class MatchGame extends Model
     protected $table = 'matches';
 
     protected $fillable = [
-        'phase_id', 'joueur_1', 'joueur_1_partenaire', 'joueur_2', 'joueur_2_partenaire',
+        'phase_id', 'equipe_1', 'equipe_2', 'nb_matchs',
         'date_heure', 'date_fin_pronostics', 'score_j1', 'score_j2', 'resultat_saisi',
+        'rappel_j2_envoye', 'rappel_24h_envoye',
     ];
 
     protected function casts(): array
@@ -23,7 +24,10 @@ class MatchGame extends Model
         return [
             'date_heure' => 'datetime',
             'date_fin_pronostics' => 'datetime',
+            'nb_matchs' => 'integer',
             'resultat_saisi' => 'boolean',
+            'rappel_j2_envoye' => 'boolean',
+            'rappel_24h_envoye' => 'boolean',
         ];
     }
 
@@ -47,31 +51,30 @@ class MatchGame extends Model
         return now()->greaterThanOrEqualTo($this->date_fin_pronostics);
     }
 
+    /**
+     * Vainqueur de la rencontre : 1 (équipe 1), 2 (équipe 2), 0 (match nul),
+     * ou null si le résultat n'est pas encore saisi.
+     */
     public function vainqueur(): ?int
     {
         if (! $this->resultat_saisi) {
             return null;
         }
 
-        return $this->score_j1 > $this->score_j2 ? 1 : 2;
-    }
+        if ($this->score_j1 === $this->score_j2) {
+            return 0;
+        }
 
-    public function estDouble(): bool
-    {
-        return ! empty($this->joueur_1_partenaire) || ! empty($this->joueur_2_partenaire);
+        return $this->score_j1 > $this->score_j2 ? 1 : 2;
     }
 
     public function equipe1(): string
     {
-        return $this->joueur_1_partenaire
-            ? "{$this->joueur_1} / {$this->joueur_1_partenaire}"
-            : $this->joueur_1;
+        return $this->equipe_1;
     }
 
     public function equipe2(): string
     {
-        return $this->joueur_2_partenaire
-            ? "{$this->joueur_2} / {$this->joueur_2_partenaire}"
-            : $this->joueur_2;
+        return $this->equipe_2;
     }
 }

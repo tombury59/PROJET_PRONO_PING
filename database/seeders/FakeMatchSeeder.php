@@ -13,49 +13,48 @@ class MatchSeeder extends Seeder
     {
         [$phase1, $phase2, $phase3] = Phase::orderBy('date_debut')->get();
 
-        // Phase 1 (terminée) : tous les matchs ont un résultat.
-        $this->creerMatch($phase1, 'Julien', 'Marc', $phase1->date_debut->copy()->addDays(9), score: [3, 1]);
-        $this->creerMatch($phase1, 'Camille', 'Nicolas', $phase1->date_debut->copy()->addDays(23), partenaires: ['Sophie', 'Laura'], score: [3, 2]);
-        $this->creerMatch($phase1, 'Thomas', 'Emma', $phase1->date_debut->copy()->addDays(37), score: [3, 0]);
-        $this->creerMatch($phase1, 'Kevin', 'Chloe', $phase1->date_debut->copy()->addDays(51), score: [1, 3]);
-        $this->creerMatch($phase1, 'Julien', 'Sophie', $phase1->date_debut->copy()->addDays(65), score: [3, 2]);
+        // Phase 1 (terminée) : toutes les rencontres ont un résultat.
+        $this->creerMatch($phase1, 'Lille 2', 'Roubaix 3', $phase1->date_debut->copy()->addDays(9), score: [12, 6]);
+        $this->creerMatch($phase1, 'Wattignies 1', 'Douai 2', $phase1->date_debut->copy()->addDays(23), score: [9, 9]);
+        $this->creerMatch($phase1, 'Tourcoing 4', 'Lens 1', $phase1->date_debut->copy()->addDays(37), score: [14, 4]);
+        $this->creerMatch($phase1, 'Arras 2', 'Lille 3', $phase1->date_debut->copy()->addDays(51), score: [7, 11]);
+        $this->creerMatch($phase1, 'Roubaix 3', 'Wattignies 1', $phase1->date_debut->copy()->addDays(65), score: [10, 8]);
 
-        // Phase 2 (terminée) : tous les matchs ont un résultat.
-        $this->creerMatch($phase2, 'Julien', 'Thomas', $phase2->date_debut->copy()->addDays(9), score: [3, 2]);
-        $this->creerMatch($phase2, 'Sophie', 'Chloe', $phase2->date_debut->copy()->addDays(23), score: [3, 0]);
-        $this->creerMatch($phase2, 'Marc', 'Kevin', $phase2->date_debut->copy()->addDays(37), partenaires: ['Nicolas', 'Emma'], score: [2, 3]);
-        $this->creerMatch($phase2, 'Camille', 'Laura', $phase2->date_debut->copy()->addDays(51), score: [3, 1]);
-        $this->creerMatch($phase2, 'Thomas', 'Kevin', $phase2->date_debut->copy()->addDays(65), score: [3, 0]);
-        $this->creerMatch($phase2, 'Nicolas', 'Emma', $phase2->date_debut->copy()->addDays(79), score: [1, 3]);
+        // Phase 2 (terminée) : toutes les rencontres ont un résultat.
+        $this->creerMatch($phase2, 'Lille 2', 'Tourcoing 4', $phase2->date_debut->copy()->addDays(9), score: [11, 7]);
+        $this->creerMatch($phase2, 'Douai 2', 'Arras 2', $phase2->date_debut->copy()->addDays(23), score: [15, 3]);
+        $this->creerMatch($phase2, 'Lens 1', 'Roubaix 3', $phase2->date_debut->copy()->addDays(37), score: [8, 10]);
+        $this->creerMatch($phase2, 'Wattignies 1', 'Lille 3', $phase2->date_debut->copy()->addDays(51), score: [12, 6]);
+        $this->creerMatch($phase2, 'Tourcoing 4', 'Lens 1', $phase2->date_debut->copy()->addDays(65), score: [9, 9]);
+        $this->creerMatch($phase2, 'Arras 2', 'Douai 2', $phase2->date_debut->copy()->addDays(79), score: [5, 13]);
 
-        // Phase 3 (en cours) : mix de matchs joués, un en attente de résultat
-        // (verrouillé mais pas encore saisi, pour déclencher la notification
-        // admin), et des matchs à venir pour tester les pronostics.
-        $this->creerMatch($phase3, 'Julien', 'Marc', now()->subDays(20), score: [3, 1]);
-        $this->creerMatch($phase3, 'Sophie', 'Thomas', now()->subDays(13), partenaires: ['Nicolas', 'Kevin'], score: [3, 2]);
-        $this->creerMatch($phase3, 'Camille', 'Emma', now()->subDays(6), score: [3, 0]);
+        // Phase 3 (en cours) : mix de rencontres jouées, une en attente de
+        // résultat (verrouillée mais pas encore saisie, pour déclencher la
+        // notification admin), et des rencontres à venir pour les pronostics.
+        $this->creerMatch($phase3, 'Lille 2', 'Roubaix 3', now()->subDays(20), score: [12, 6]);
+        $this->creerMatch($phase3, 'Douai 2', 'Tourcoing 4', now()->subDays(13), score: [10, 8]);
+        $this->creerMatch($phase3, 'Arras 2', 'Wattignies 1', now()->subDays(6), score: [14, 4]);
 
-        $this->creerMatch($phase3, 'Laura', 'Chloe', now()->subDay());
+        $this->creerMatch($phase3, 'Lens 1', 'Lille 3', now()->subDay());
 
-        $this->creerMatch($phase3, 'Julien', 'Nicolas', now()->addDays(7));
-        $this->creerMatch($phase3, 'Marc', 'Sophie', now()->addDays(16), partenaires: ['Kevin', 'Emma']);
-        $this->creerMatch($phase3, 'Thomas', 'Camille', now()->addDays(30));
+        $this->creerMatch($phase3, 'Lille 2', 'Douai 2', now()->addDays(7));
+        $this->creerMatch($phase3, 'Roubaix 3', 'Arras 2', now()->addDays(16), nbMatchs: 14);
+        $this->creerMatch($phase3, 'Tourcoing 4', 'Wattignies 1', now()->addDays(30));
     }
 
     private function creerMatch(
         Phase $phase,
-        string $joueur1,
-        string $joueur2,
+        string $equipe1,
+        string $equipe2,
         Carbon $dateHeure,
-        ?array $partenaires = null,
+        int $nbMatchs = 18,
         ?array $score = null,
     ): MatchGame {
         return MatchGame::create([
             'phase_id' => $phase->id,
-            'joueur_1' => $joueur1,
-            'joueur_1_partenaire' => $partenaires[0] ?? null,
-            'joueur_2' => $joueur2,
-            'joueur_2_partenaire' => $partenaires[1] ?? null,
+            'equipe_1' => $equipe1,
+            'equipe_2' => $equipe2,
+            'nb_matchs' => $nbMatchs,
             'date_heure' => $dateHeure,
             'date_fin_pronostics' => $dateHeure->copy()->subHour(),
             'score_j1' => $score[0] ?? null,

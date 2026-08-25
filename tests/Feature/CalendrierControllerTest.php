@@ -27,8 +27,8 @@ class CalendrierControllerTest extends TestCase
             'date_fin' => now()->addMonth(),
         ]);
         MatchGame::factory()->for($phase)->create([
-            'joueur_1' => 'Alice',
-            'joueur_2' => 'Bob',
+            'equipe_1' => 'Alice',
+            'equipe_2' => 'Bob',
             'date_heure' => now()->startOfMonth()->addDays(5)->setTime(19, 0),
         ]);
 
@@ -50,8 +50,8 @@ class CalendrierControllerTest extends TestCase
             'date_fin' => now()->addMonths(2),
         ]);
         MatchGame::factory()->for($phase)->create([
-            'joueur_1' => 'Camille',
-            'joueur_2' => 'Marc',
+            'equipe_1' => 'Camille',
+            'equipe_2' => 'Marc',
             'date_heure' => $moisSuivant->copy()->startOfMonth()->addDays(3)->setTime(19, 0),
         ]);
 
@@ -70,8 +70,8 @@ class CalendrierControllerTest extends TestCase
             'date_fin' => now()->addMonths(6),
         ]);
         MatchGame::factory()->for($phase)->create([
-            'joueur_1' => 'Lointain1',
-            'joueur_2' => 'Lointain2',
+            'equipe_1' => 'Lointain1',
+            'equipe_2' => 'Lointain2',
             'date_heure' => now()->addMonths(3),
         ]);
 

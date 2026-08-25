@@ -76,7 +76,7 @@
                                                             name="prono_score_j1"
                                                             type="number"
                                                             min="0"
-                                                            max="3"
+                                                            max="{{ $match->nb_matchs }}"
                                                             x-model="scoreJ1"
                                                             required
                                                             class="mt-1 block w-20 rounded-md border-surface-300 text-center shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
@@ -92,7 +92,7 @@
                                                             name="prono_score_j2"
                                                             type="number"
                                                             min="0"
-                                                            max="3"
+                                                            max="{{ $match->nb_matchs }}"
                                                             x-model="scoreJ2"
                                                             required
                                                             class="mt-1 block w-20 rounded-md border-surface-300 text-center shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
@@ -190,7 +190,7 @@
                                                         <input
                                                             type="number"
                                                             min="0"
-                                                            max="3"
+                                                            max="{{ $match->nb_matchs }}"
                                                             x-model="scoreJ1"
                                                             required
                                                             class="block w-16 rounded-md border-surface-300 text-center text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
@@ -199,7 +199,7 @@
                                                         <input
                                                             type="number"
                                                             min="0"
-                                                            max="3"
+                                                            max="{{ $match->nb_matchs }}"
                                                             x-model="scoreJ2"
                                                             required
                                                             class="block w-16 rounded-md border-surface-300 text-center text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
@@ -265,6 +265,13 @@
                                                     >
                                                         Modifier
                                                     </button>
+                                                @elseif ($match->date_heure->isPast())
+                                                    <a
+                                                        href="{{ route('matchs.pronostics', $match) }}"
+                                                        class="text-xs font-semibold uppercase tracking-widest text-primary-600 hover:text-primary-500 dark:text-primary-400"
+                                                    >
+                                                        Voir les pronos
+                                                    </a>
                                                 @endif
                                             </td>
                                         </tr>
@@ -331,7 +338,7 @@
                                                 <input
                                                     type="number"
                                                     min="0"
-                                                    max="3"
+                                                    max="{{ $match->nb_matchs }}"
                                                     x-model="scoreJ1"
                                                     required
                                                     class="block w-16 rounded-md border-surface-300 text-center text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
@@ -340,7 +347,7 @@
                                                 <input
                                                     type="number"
                                                     min="0"
-                                                    max="3"
+                                                    max="{{ $match->nb_matchs }}"
                                                     x-model="scoreJ2"
                                                     required
                                                     class="block w-16 rounded-md border-surface-300 text-center text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
@@ -377,6 +384,17 @@
                                             <span class="text-sm text-surface-400">Pas de pronostic</span>
                                         @endif
                                     </div>
+
+                                    @if ($match->date_heure->isPast())
+                                        <div class="mt-3 border-t border-surface-100 pt-3 text-right dark:border-surface-800">
+                                            <a
+                                                href="{{ route('matchs.pronostics', $match) }}"
+                                                class="text-xs font-semibold uppercase tracking-widest text-primary-600 hover:text-primary-500 dark:text-primary-400"
+                                            >
+                                                Voir les pronos des autres
+                                            </a>
+                                        </div>
+                                    @endif
                                 </x-card>
                             @endforeach
                             </x-slot:cards>

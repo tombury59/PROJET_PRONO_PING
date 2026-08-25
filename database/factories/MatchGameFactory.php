@@ -22,20 +22,13 @@ class MatchGameFactory extends Factory
 
         return [
             'phase_id' => Phase::factory(),
-            'joueur_1' => fake()->firstName(),
-            'joueur_2' => fake()->firstName(),
+            'equipe_1' => fake()->city().' '.fake()->numberBetween(1, 4),
+            'equipe_2' => fake()->city().' '.fake()->numberBetween(1, 4),
+            'nb_matchs' => 18,
             'date_heure' => $dateHeure,
             'date_fin_pronostics' => $dateHeure->copy()->subHour(),
             'resultat_saisi' => false,
         ];
-    }
-
-    public function double(): static
-    {
-        return $this->state(fn () => [
-            'joueur_1_partenaire' => fake()->firstName(),
-            'joueur_2_partenaire' => fake()->firstName(),
-        ]);
     }
 
     /**

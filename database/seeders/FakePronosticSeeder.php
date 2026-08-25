@@ -39,8 +39,8 @@ class PronosticSeeder extends Seeder
                     'user_id' => $joueur->id,
                     'match_id' => $match->id,
                     'prono_vainqueur' => 1,
-                    'prono_score_j1' => 3,
-                    'prono_score_j2' => 1,
+                    'prono_score_j1' => 11,
+                    'prono_score_j2' => 7,
                 ]);
             }
         }
@@ -53,21 +53,32 @@ class PronosticSeeder extends Seeder
 
         if ($pattern === 0) {
             // Score exact.
-            $vainqueur = $vainqueurReel;
             [$scoreJ1, $scoreJ2] = [$match->score_j1, $match->score_j2];
         } elseif (in_array($pattern, [1, 2], true)) {
-            // Bon vainqueur, score approximatif.
-            $vainqueur = $vainqueurReel;
-            [$scoreJ1, $scoreJ2] = $vainqueur === 1 ? [3, 1] : [1, 3];
+            // Bonne issue, score approximatif.
+            [$scoreJ1, $scoreJ2] = match ($vainqueurReel) {
+                1 => [10, 8],
+                2 => [8, 10],
+                default => [8, 8],
+            };
 
             if ($scoreJ1 === $match->score_j1 && $scoreJ2 === $match->score_j2) {
-                [$scoreJ1, $scoreJ2] = $vainqueur === 1 ? [3, 0] : [0, 3];
+                [$scoreJ1, $scoreJ2] = match ($vainqueurReel) {
+                    1 => [12, 6],
+                    2 => [6, 12],
+                    default => [7, 7],
+                };
             }
         } else {
-            // Mauvais vainqueur.
-            $vainqueur = $vainqueurReel === 1 ? 2 : 1;
-            [$scoreJ1, $scoreJ2] = $vainqueur === 1 ? [3, 1] : [1, 3];
+            // Mauvaise issue.
+            [$scoreJ1, $scoreJ2] = $vainqueurReel === 1 ? [6, 12] : [12, 6];
         }
+
+        $vainqueur = match (true) {
+            $scoreJ1 > $scoreJ2 => 1,
+            $scoreJ1 < $scoreJ2 => 2,
+            default => 0,
+        };
 
         $pronostic = Pronostic::create([
             'user_id' => $joueur->id,

@@ -121,10 +121,9 @@ class MatchController extends Controller
     {
         return $request->validate([
             'phase_id' => ['required', 'exists:phases,id'],
-            'joueur_1' => ['required', 'string', 'max:255'],
-            'joueur_1_partenaire' => ['nullable', 'string', 'max:255', 'different:joueur_1', 'required_with:joueur_2_partenaire'],
-            'joueur_2' => ['required', 'string', 'max:255', 'different:joueur_1'],
-            'joueur_2_partenaire' => ['nullable', 'string', 'max:255', 'different:joueur_2', 'different:joueur_1_partenaire', 'required_with:joueur_1_partenaire'],
+            'equipe_1' => ['required', 'string', 'max:255'],
+            'equipe_2' => ['required', 'string', 'max:255', 'different:equipe_1'],
+            'nb_matchs' => ['required', 'integer', 'in:14,18'],
             'date_heure' => ['required', 'date'],
             'date_fin_pronostics' => ['required', 'date', 'before:date_heure'],
         ]);

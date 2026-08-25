@@ -26,13 +26,13 @@ class MatchControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $phase = Phase::factory()->create();
-        MatchGame::factory()->for($phase)->create(['joueur_1' => 'Alice', 'joueur_2' => 'Bob']);
+        MatchGame::factory()->for($phase)->create(['equipe_1' => 'Lille 2', 'equipe_2' => 'Roubaix 3']);
 
         $response = $this->actingAs($admin)->get('/admin/matches');
 
         $response->assertOk();
-        $response->assertSee('Alice');
-        $response->assertSee('Bob');
+        $response->assertSee('Lille 2');
+        $response->assertSee('Roubaix 3');
     }
 
     public function test_admin_can_create_a_match(): void
@@ -42,8 +42,9 @@ class MatchControllerTest extends TestCase
 
         $response = $this->actingAs($admin)->post('/admin/matches', [
             'phase_id' => $phase->id,
-            'joueur_1' => 'Alice',
-            'joueur_2' => 'Bob',
+            'equipe_1' => 'Lille 2',
+            'equipe_2' => 'Roubaix 3',
+            'nb_matchs' => 18,
             'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
             'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
         ]);
@@ -51,25 +52,44 @@ class MatchControllerTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('matches', [
             'phase_id' => $phase->id,
-            'joueur_1' => 'Alice',
-            'joueur_2' => 'Bob',
+            'equipe_1' => 'Lille 2',
+            'equipe_2' => 'Roubaix 3',
+            'nb_matchs' => 18,
         ]);
     }
 
-    public function test_players_must_be_different(): void
+    public function test_teams_must_be_different(): void
     {
         $admin = User::factory()->admin()->create();
         $phase = Phase::factory()->create();
 
         $response = $this->actingAs($admin)->post('/admin/matches', [
             'phase_id' => $phase->id,
-            'joueur_1' => 'Alice',
-            'joueur_2' => 'Alice',
+            'equipe_1' => 'Lille 2',
+            'equipe_2' => 'Lille 2',
+            'nb_matchs' => 18,
             'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
             'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
         ]);
 
-        $response->assertSessionHasErrors('joueur_2');
+        $response->assertSessionHasErrors('equipe_2');
+    }
+
+    public function test_nb_matchs_must_be_a_valid_format(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $phase = Phase::factory()->create();
+
+        $response = $this->actingAs($admin)->post('/admin/matches', [
+            'phase_id' => $phase->id,
+            'equipe_1' => 'Lille 2',
+            'equipe_2' => 'Roubaix 3',
+            'nb_matchs' => 20,
+            'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
+            'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
+        ]);
+
+        $response->assertSessionHasErrors('nb_matchs');
     }
 
     public function test_date_fin_pronostics_must_be_before_date_heure(): void
@@ -79,8 +99,9 @@ class MatchControllerTest extends TestCase
 
         $response = $this->actingAs($admin)->post('/admin/matches', [
             'phase_id' => $phase->id,
-            'joueur_1' => 'Alice',
-            'joueur_2' => 'Bob',
+            'equipe_1' => 'Lille 2',
+            'equipe_2' => 'Roubaix 3',
+            'nb_matchs' => 18,
             'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
             'date_fin_pronostics' => now()->addWeek()->addHour()->format('Y-m-d H:i:s'),
         ]);
@@ -104,8 +125,9 @@ class MatchControllerTest extends TestCase
         // n'a pas remarqué qu'il fallait le changer).
         $response = $this->actingAs($admin)->put("/admin/matches/{$match->id}", [
             'phase_id' => $match->phase_id,
-            'joueur_1' => $match->joueur_1,
-            'joueur_2' => $match->joueur_2,
+            'equipe_1' => $match->equipe_1,
+            'equipe_2' => $match->equipe_2,
+            'nb_matchs' => $match->nb_matchs,
             'date_heure' => $nouvelleDateHeure->format('Y-m-d H:i:s'),
             'date_fin_pronostics' => $match->date_heure->copy()->subHour()->format('Y-m-d H:i:s'),
         ]);
@@ -130,8 +152,9 @@ class MatchControllerTest extends TestCase
 
         $response = $this->actingAs($admin)->put("/admin/matches/{$match->id}", [
             'phase_id' => $match->phase_id,
-            'joueur_1' => $match->joueur_1,
-            'joueur_2' => $match->joueur_2,
+            'equipe_1' => $match->equipe_1,
+            'equipe_2' => $match->equipe_2,
+            'nb_matchs' => $match->nb_matchs,
             'date_heure' => $nouvelleDateHeure->format('Y-m-d H:i:s'),
             'date_fin_pronostics' => $finPronosticsPersonnalisee->format('Y-m-d H:i:s'),
         ]);
@@ -141,52 +164,6 @@ class MatchControllerTest extends TestCase
             $finPronosticsPersonnalisee->format('Y-m-d H:i:s'),
             $match->fresh()->date_fin_pronostics->format('Y-m-d H:i:s')
         );
-    }
-
-    public function test_admin_can_create_a_double_match(): void
-    {
-        $admin = User::factory()->admin()->create();
-        $phase = Phase::factory()->create();
-
-        $response = $this->actingAs($admin)->post('/admin/matches', [
-            'phase_id' => $phase->id,
-            'joueur_1' => 'Alice',
-            'joueur_1_partenaire' => 'Chloé',
-            'joueur_2' => 'Bob',
-            'joueur_2_partenaire' => 'Dan',
-            'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
-            'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
-        ]);
-
-        $response->assertRedirect();
-        $this->assertDatabaseHas('matches', [
-            'joueur_1' => 'Alice',
-            'joueur_1_partenaire' => 'Chloé',
-            'joueur_2' => 'Bob',
-            'joueur_2_partenaire' => 'Dan',
-        ]);
-
-        $match = MatchGame::where('joueur_1', 'Alice')->firstOrFail();
-        $this->assertTrue($match->estDouble());
-        $this->assertSame('Alice / Chloé', $match->equipe1());
-        $this->assertSame('Bob / Dan', $match->equipe2());
-    }
-
-    public function test_double_match_requires_both_partners(): void
-    {
-        $admin = User::factory()->admin()->create();
-        $phase = Phase::factory()->create();
-
-        $response = $this->actingAs($admin)->post('/admin/matches', [
-            'phase_id' => $phase->id,
-            'joueur_1' => 'Alice',
-            'joueur_1_partenaire' => 'Chloé',
-            'joueur_2' => 'Bob',
-            'date_heure' => now()->addWeek()->format('Y-m-d H:i:s'),
-            'date_fin_pronostics' => now()->addWeek()->subHour()->format('Y-m-d H:i:s'),
-        ]);
-
-        $response->assertSessionHasErrors('joueur_2_partenaire');
     }
 
     public function test_admin_cannot_delete_a_match_with_pronostics(): void
@@ -215,29 +192,29 @@ class MatchControllerTest extends TestCase
     public function test_admin_can_enter_a_result_and_points_are_calculated(): void
     {
         $admin = User::factory()->admin()->create();
-        $match = MatchGame::factory()->create();
+        $match = MatchGame::factory()->create(['nb_matchs' => 18]);
 
         $exactScorePlayer = Pronostic::factory()->for($match, 'match')->create([
             'prono_vainqueur' => 1,
-            'prono_score_j1' => 3,
-            'prono_score_j2' => 1,
+            'prono_score_j1' => 12,
+            'prono_score_j2' => 6,
         ]);
 
         $rightWinnerOnlyPlayer = Pronostic::factory()->for($match, 'match')->create([
             'prono_vainqueur' => 1,
-            'prono_score_j1' => 3,
-            'prono_score_j2' => 0,
+            'prono_score_j1' => 10,
+            'prono_score_j2' => 8,
         ]);
 
         $wrongPlayer = Pronostic::factory()->for($match, 'match')->create([
             'prono_vainqueur' => 2,
-            'prono_score_j1' => 1,
-            'prono_score_j2' => 3,
+            'prono_score_j1' => 6,
+            'prono_score_j2' => 12,
         ]);
 
         $response = $this->actingAs($admin)->put("/admin/matches/{$match->id}/resultat", [
-            'score_j1' => 3,
-            'score_j2' => 1,
+            'score_j1' => 12,
+            'score_j2' => 6,
         ]);
 
         $response->assertRedirect();
@@ -247,16 +224,46 @@ class MatchControllerTest extends TestCase
         $this->assertSame(0, $wrongPlayer->fresh()->points_obtenus);
     }
 
-    public function test_result_scores_cannot_be_equal(): void
+    public function test_result_can_be_a_draw_and_points_reward_the_exact_and_the_outcome(): void
     {
         $admin = User::factory()->admin()->create();
-        $match = MatchGame::factory()->create();
+        $match = MatchGame::factory()->create(['nb_matchs' => 18]);
 
-        $response = $this->actingAs($admin)->put("/admin/matches/{$match->id}/resultat", [
-            'score_j1' => 2,
-            'score_j2' => 2,
+        // Prono nul exact (9-9) => 3 pts.
+        $exactDraw = Pronostic::factory()->for($match, 'match')->create([
+            'prono_vainqueur' => 0,
+            'prono_score_j1' => 9,
+            'prono_score_j2' => 9,
         ]);
 
-        $response->assertSessionHasErrors('score_j2');
+        // Prono nul mais pas le bon score (8-8) => bonne issue => 1 pt.
+        $wrongScoreDraw = Pronostic::factory()->for($match, 'match')->create([
+            'prono_vainqueur' => 0,
+            'prono_score_j1' => 8,
+            'prono_score_j2' => 8,
+        ]);
+
+        $response = $this->actingAs($admin)->put("/admin/matches/{$match->id}/resultat", [
+            'score_j1' => 9,
+            'score_j2' => 9,
+        ]);
+
+        $response->assertRedirect();
+        $this->assertTrue($match->fresh()->resultat_saisi);
+        $this->assertSame(3, $exactDraw->fresh()->points_obtenus);
+        $this->assertSame(1, $wrongScoreDraw->fresh()->points_obtenus);
+    }
+
+    public function test_result_score_cannot_exceed_the_format(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $match = MatchGame::factory()->create(['nb_matchs' => 14]);
+
+        $response = $this->actingAs($admin)->put("/admin/matches/{$match->id}/resultat", [
+            'score_j1' => 15,
+            'score_j2' => 0,
+        ]);
+
+        $response->assertSessionHasErrors('score_j1');
     }
 }

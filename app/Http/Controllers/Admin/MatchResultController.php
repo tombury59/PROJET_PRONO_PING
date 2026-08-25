@@ -17,8 +17,8 @@ class MatchResultController extends Controller
     public function update(Request $request, MatchGame $match): RedirectResponse
     {
         $data = $request->validate([
-            'score_j1' => ['required', 'integer', 'min:0'],
-            'score_j2' => ['required', 'integer', 'min:0', 'different:score_j1'],
+            'score_j1' => ['required', 'integer', 'min:0', 'max:'.$match->nb_matchs],
+            'score_j2' => ['required', 'integer', 'min:0', 'max:'.$match->nb_matchs],
         ]);
 
         $match->update([

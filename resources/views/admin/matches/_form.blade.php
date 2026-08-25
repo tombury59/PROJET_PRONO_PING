@@ -20,73 +20,55 @@
     <x-input-error :messages="$errors->get('phase_id')" class="mt-2" />
 </div>
 
-@php($estDouble = old('joueur_1_partenaire', $match->joueur_1_partenaire ?? null) || old('joueur_2_partenaire', $match->joueur_2_partenaire ?? null))
-
-<div class="mt-4" x-data="{ double: @js((bool) $estDouble) }">
-    <label class="flex items-center gap-2">
-        <input
-            type="checkbox"
-            x-model="double"
-            x-on:change="if (! double) { $refs.partenaire1.value = ''; $refs.partenaire2.value = ''; }"
-            class="rounded border-surface-300 text-surface-900 shadow-sm focus:ring-surface-500 dark:border-surface-700"
+<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div>
+        <x-input-label for="equipe_1" value="Équipe 1 (domicile)" />
+        <x-text-input
+            id="equipe_1"
+            name="equipe_1"
+            type="text"
+            class="mt-1 block w-full"
+            :value="old('equipe_1', $match->equipe_1 ?? '')"
+            placeholder="Ex. Lille 2"
+            required
+            autofocus
         />
-        <span class="text-sm font-medium text-surface-700 dark:text-surface-300">Match en double (2 contre 2)</span>
-    </label>
-
-    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
-            <x-input-label for="joueur_1" value="Joueur 1" />
-            <x-text-input
-                id="joueur_1"
-                name="joueur_1"
-                type="text"
-                class="mt-1 block w-full"
-                :value="old('joueur_1', $match->joueur_1 ?? '')"
-                required
-                autofocus
-            />
-            <x-input-error :messages="$errors->get('joueur_1')" class="mt-2" />
-
-            <div x-show="double" x-transition class="mt-2">
-                <x-input-label for="joueur_1_partenaire" value="Partenaire joueur 1" />
-                <x-text-input
-                    id="joueur_1_partenaire"
-                    name="joueur_1_partenaire"
-                    type="text"
-                    class="mt-1 block w-full"
-                    :value="old('joueur_1_partenaire', $match->joueur_1_partenaire ?? '')"
-                    x-ref="partenaire1"
-                />
-                <x-input-error :messages="$errors->get('joueur_1_partenaire')" class="mt-2" />
-            </div>
-        </div>
-
-        <div>
-            <x-input-label for="joueur_2" value="Joueur 2" />
-            <x-text-input
-                id="joueur_2"
-                name="joueur_2"
-                type="text"
-                class="mt-1 block w-full"
-                :value="old('joueur_2', $match->joueur_2 ?? '')"
-                required
-            />
-            <x-input-error :messages="$errors->get('joueur_2')" class="mt-2" />
-
-            <div x-show="double" x-transition class="mt-2">
-                <x-input-label for="joueur_2_partenaire" value="Partenaire joueur 2" />
-                <x-text-input
-                    id="joueur_2_partenaire"
-                    name="joueur_2_partenaire"
-                    type="text"
-                    class="mt-1 block w-full"
-                    :value="old('joueur_2_partenaire', $match->joueur_2_partenaire ?? '')"
-                    x-ref="partenaire2"
-                />
-                <x-input-error :messages="$errors->get('joueur_2_partenaire')" class="mt-2" />
-            </div>
-        </div>
+        <x-input-error :messages="$errors->get('equipe_1')" class="mt-2" />
     </div>
+
+    <div>
+        <x-input-label for="equipe_2" value="Équipe 2 (extérieur)" />
+        <x-text-input
+            id="equipe_2"
+            name="equipe_2"
+            type="text"
+            class="mt-1 block w-full"
+            :value="old('equipe_2', $match->equipe_2 ?? '')"
+            placeholder="Ex. Roubaix 3"
+            required
+        />
+        <x-input-error :messages="$errors->get('equipe_2')" class="mt-2" />
+    </div>
+</div>
+
+<div class="mt-4">
+    <x-input-label for="nb_matchs" value="Format de la rencontre" />
+    <select
+        id="nb_matchs"
+        name="nb_matchs"
+        class="mt-1 block w-full rounded-md border-surface-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
+        required
+    >
+        @foreach ([18 => 'En 18 matchs (nul à 9-9)', 14 => 'En 14 matchs — région (nul à 7-7)'] as $valeur => $libelle)
+            <option value="{{ $valeur }}" @selected(old('nb_matchs', $match->nb_matchs ?? 18) == $valeur)>
+                {{ $libelle }}
+            </option>
+        @endforeach
+    </select>
+    <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+        Nombre total de matchs de la rencontre. Le score de chaque équipe va de 0 à ce total.
+    </p>
+    <x-input-error :messages="$errors->get('nb_matchs')" class="mt-2" />
 </div>
 
 <div class="mt-4" x-data>

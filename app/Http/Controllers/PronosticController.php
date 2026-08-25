@@ -41,14 +41,20 @@ class PronosticController extends Controller
         abort_if($match->isVerrouille(), 403, 'Ce match est verrouillé, le pronostic ne peut plus être modifié.');
 
         $data = $request->validate([
-            'prono_score_j1' => ['required', 'integer', 'min:0', 'max:3'],
-            'prono_score_j2' => ['required', 'integer', 'min:0', 'max:3', 'different:prono_score_j1'],
+            'prono_score_j1' => ['required', 'integer', 'min:0', 'max:'.$match->nb_matchs],
+            'prono_score_j2' => ['required', 'integer', 'min:0', 'max:'.$match->nb_matchs],
         ]);
+
+        $vainqueur = match (true) {
+            $data['prono_score_j1'] > $data['prono_score_j2'] => 1,
+            $data['prono_score_j1'] < $data['prono_score_j2'] => 2,
+            default => 0,
+        };
 
         Pronostic::updateOrCreate(
             ['user_id' => $request->user()->id, 'match_id' => $match->id],
             [
-                'prono_vainqueur' => $data['prono_score_j1'] > $data['prono_score_j2'] ? 1 : 2,
+                'prono_vainqueur' => $vainqueur,
                 'prono_score_j1' => $data['prono_score_j1'],
                 'prono_score_j2' => $data['prono_score_j2'],
             ]

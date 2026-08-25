@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\BonusResolu;
 use App\Notifications\NouveauMatchDisponible;
 use App\Notifications\NouvelleQuestionBonus;
+use App\Notifications\RappelPronostics;
 use App\Notifications\ResultatADeposer;
 use App\Notifications\ResultatDisponible;
 use Illuminate\Notifications\DatabaseNotification;
@@ -51,6 +52,49 @@ class NotificationService
     {
         foreach ($question->reponses as $reponse) {
             $reponse->user->notify(new BonusResolu($question, $reponse->points_obtenus ?? 0));
+        }
+    }
+
+    /**
+     * Envoie les rappels de pronostics aux joueurs qui n'ont pas encore
+     * pronostiqué, une seule fois par échéance et par match :
+     *  - "J-2" : la clôture des pronostics tombe dans 24h à 48h ;
+     *  - "24h" : la clôture tombe dans les prochaines 24h.
+     */
+    public function envoyerRappelsPronostics(): void
+    {
+        $maintenant = now();
+
+        $echeances = [
+            'j2' => [
+                'colonne' => 'rappel_j2_envoye',
+                'debut' => $maintenant->copy()->addDay(),
+                'fin' => $maintenant->copy()->addDays(2),
+            ],
+            '24h' => [
+                'colonne' => 'rappel_24h_envoye',
+                'debut' => $maintenant->copy(),
+                'fin' => $maintenant->copy()->addDay(),
+            ],
+        ];
+
+        foreach ($echeances as $echeance => $config) {
+            $matchs = MatchGame::where('resultat_saisi', false)
+                ->where($config['colonne'], false)
+                ->whereBetween('date_fin_pronostics', [$config['debut'], $config['fin']])
+                ->get();
+
+            foreach ($matchs as $match) {
+                $joueursSansProno = User::where('role', 'joueur')
+                    ->whereDoesntHave('pronostics', fn ($query) => $query->where('match_id', $match->id))
+                    ->get();
+
+                if ($joueursSansProno->isNotEmpty()) {
+                    Notification::send($joueursSansProno, new RappelPronostics($match, $echeance));
+                }
+
+                $match->update([$config['colonne'] => true]);
+            }
         }
     }
 

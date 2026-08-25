@@ -100,8 +100,8 @@ class PhaseControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
         $phase = Phase::factory()->create();
         $match = $phase->matches()->create([
-            'joueur_1' => 'Alice',
-            'joueur_2' => 'Bob',
+            'equipe_1' => 'Alice',
+            'equipe_2' => 'Bob',
             'date_heure' => now()->addDay(),
             'date_fin_pronostics' => now()->addDay()->subHour(),
         ]);

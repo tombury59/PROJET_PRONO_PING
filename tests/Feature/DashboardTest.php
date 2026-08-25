@@ -22,14 +22,14 @@ class DashboardTest extends TestCase
         ]);
 
         $upcoming = MatchGame::factory()->for($phase)->create([
-            'joueur_1' => 'Alice',
-            'joueur_2' => 'Bob',
+            'equipe_1' => 'Alice',
+            'equipe_2' => 'Bob',
             'date_heure' => now()->addDay(),
         ]);
 
         $played = MatchGame::factory()->for($phase)->create([
-            'joueur_1' => 'Carla',
-            'joueur_2' => 'Dan',
+            'equipe_1' => 'Carla',
+            'equipe_2' => 'Dan',
             'date_heure' => now()->subDay(),
             'resultat_saisi' => true,
             'score_j1' => 3,
