@@ -48,6 +48,20 @@
 </div>
 
 <div class="mt-4">
+    <x-input-label for="description" value="Description (optionnel)" />
+    <textarea
+        id="description"
+        name="description"
+        rows="2"
+        class="mt-1 block w-full rounded-md border-surface-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-surface-700 dark:bg-surface-800 dark:text-white"
+    >{{ old('description', $question->description ?? '') }}</textarea>
+    <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+        Précisions affichées aux joueurs sous la question (règle, format de réponse attendu, etc.).
+    </p>
+    <x-input-error :messages="$errors->get('description')" class="mt-2" />
+</div>
+
+<div class="mt-4">
     <x-input-label for="reponse_correcte" value="Bonne réponse" />
     <x-text-input
         id="reponse_correcte"

@@ -95,11 +95,11 @@ class PhaseControllerTest extends TestCase
         $this->assertDatabaseMissing('phases', ['id' => $phase->id]);
     }
 
-    public function test_admin_cannot_delete_a_phase_with_matches(): void
+    public function test_admin_can_delete_a_phase_with_matches_and_cascade(): void
     {
         $admin = User::factory()->admin()->create();
         $phase = Phase::factory()->create();
-        $phase->matches()->create([
+        $match = $phase->matches()->create([
             'joueur_1' => 'Alice',
             'joueur_2' => 'Bob',
             'date_heure' => now()->addDay(),
@@ -109,6 +109,7 @@ class PhaseControllerTest extends TestCase
         $response = $this->actingAs($admin)->delete("/admin/phases/{$phase->id}");
 
         $response->assertRedirect(route('admin.phases.index'));
-        $this->assertDatabaseHas('phases', ['id' => $phase->id]);
+        $this->assertDatabaseMissing('phases', ['id' => $phase->id]);
+        $this->assertDatabaseMissing('matches', ['id' => $match->id]);
     }
 }

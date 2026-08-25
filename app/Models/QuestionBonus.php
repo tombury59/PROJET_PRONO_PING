@@ -13,7 +13,7 @@ class QuestionBonus extends Model
 
     protected $table = 'questions_bonus';
 
-    protected $fillable = ['phase_id', 'match_id', 'question', 'reponse_correcte'];
+    protected $fillable = ['phase_id', 'match_id', 'question', 'description', 'reponse_correcte'];
 
     public function phase(): BelongsTo
     {

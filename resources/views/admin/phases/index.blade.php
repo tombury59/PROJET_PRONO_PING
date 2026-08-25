@@ -59,7 +59,7 @@
                                         Modifier
                                     </a>
 
-                                    <form method="POST" action="{{ route('admin.phases.destroy', $phase) }}" class="ml-3 inline" onsubmit="return confirm('Supprimer cette phase ?');">
+                                    <form method="POST" action="{{ route('admin.phases.destroy', $phase) }}" class="ml-3 inline" onsubmit="return confirm(@js($phase->matches_count > 0 ? 'Cette phase contient '.$phase->matches_count.' match(s). La supprimer effacera aussi ces matchs, tous les pronostics et les questions bonus associés. Continuer ?' : 'Supprimer cette phase ?'));">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="font-medium text-danger-600 underline-offset-2 hover:underline dark:text-danger-400">
@@ -102,7 +102,7 @@
                                     Modifier
                                 </a>
 
-                                <form method="POST" action="{{ route('admin.phases.destroy', $phase) }}" onsubmit="return confirm('Supprimer cette phase ?');">
+                                <form method="POST" action="{{ route('admin.phases.destroy', $phase) }}" onsubmit="return confirm(@js($phase->matches_count > 0 ? 'Cette phase contient '.$phase->matches_count.' match(s). La supprimer effacera aussi ces matchs, tous les pronostics et les questions bonus associés. Continuer ?' : 'Supprimer cette phase ?'));">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-danger-600 hover:text-danger-500 dark:text-danger-400">

@@ -32,6 +32,11 @@
                                 <p class="font-semibold text-surface-900 dark:text-white">
                                     {{ $question->question }}
                                 </p>
+                                @if ($question->description)
+                                    <p class="mt-1 whitespace-pre-line text-sm text-surface-600 dark:text-surface-300">
+                                        {{ $question->description }}
+                                    </p>
+                                @endif
                                 @if ($question->match)
                                     <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
                                         Lié au match {{ $question->match->equipe1() }} vs {{ $question->match->equipe2() }}

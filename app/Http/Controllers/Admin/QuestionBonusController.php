@@ -125,6 +125,7 @@ class QuestionBonusController extends Controller
             'phase_id' => ['required', 'exists:phases,id'],
             'match_id' => ['nullable', 'exists:matches,id'],
             'question' => ['required', 'string', 'max:500'],
+            'description' => ['nullable', 'string', 'max:1000'],
             'reponse_correcte' => ['nullable', 'string', 'max:255'],
         ]);
     }

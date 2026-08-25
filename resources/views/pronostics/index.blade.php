@@ -46,6 +46,17 @@
                                                 <p class="mt-2 text-sm text-surface-500 dark:text-surface-400">
                                                     {{ $match->date_heure->format('d/m/Y H:i') }}
                                                 </p>
+
+                                                <div x-data="countdown(@js($match->date_fin_pronostics->toIso8601String()))" class="mt-2">
+                                                    <p class="text-xs font-medium uppercase tracking-wide text-surface-400">
+                                                        Clôture des pronos dans
+                                                    </p>
+                                                    <p
+                                                        class="text-sm font-semibold tabular-nums"
+                                                        :class="expired ? 'text-danger-600 dark:text-danger-400' : 'text-primary-600 dark:text-primary-400'"
+                                                        x-text="remaining"
+                                                    ></p>
+                                                </div>
                                             </div>
 
                                             <form

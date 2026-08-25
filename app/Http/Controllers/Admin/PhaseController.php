@@ -47,11 +47,10 @@ class PhaseController extends Controller
 
     public function destroy(Phase $phase): RedirectResponse
     {
-        if ($phase->matches()->exists()) {
-            return redirect()->route('admin.phases.index')
-                ->with('error', 'Impossible de supprimer une phase qui contient des matchs.');
-        }
-
+        // La suppression cascade en base sur les matchs, pronostics et
+        // questions/réponses bonus rattachés à la phase (clés étrangères
+        // en cascadeOnDelete). L'avertissement est porté par la confirmation
+        // côté interface.
         $phase->delete();
 
         return redirect()->route('admin.phases.index')->with('status', 'Phase supprimée.');

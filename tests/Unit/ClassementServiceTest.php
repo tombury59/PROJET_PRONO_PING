@@ -84,6 +84,27 @@ class ClassementServiceTest extends TestCase
         $this->assertSame($phase3->id, $phasesIncluses->last()->id);
     }
 
+    public function test_admins_are_excluded_from_the_classement(): void
+    {
+        $phase = Phase::factory()->create([
+            'date_debut' => now()->subMonth(),
+            'date_fin' => now()->addMonth(),
+            'reset_classement' => true,
+        ]);
+
+        $joueur = User::factory()->create();
+        $admin = User::factory()->admin()->create();
+
+        $match = MatchGame::factory()->for($phase)->create(['resultat_saisi' => true]);
+        Pronostic::factory()->for($joueur)->for($match, 'match')->create(['points_obtenus' => 3]);
+        Pronostic::factory()->for($admin)->for($match, 'match')->create(['points_obtenus' => 3]);
+
+        $classement = app(ClassementService::class)->pourPhase($phase);
+
+        $this->assertNotNull($classement->firstWhere('user.id', $joueur->id));
+        $this->assertNull($classement->firstWhere('user.id', $admin->id));
+    }
+
     public function test_points_are_cumulated_across_chained_phases(): void
     {
         $phase1 = Phase::factory()->create([
