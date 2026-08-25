@@ -12,6 +12,9 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+# Lien symbolique public/storage -> storage/app/public (avatars, etc.).
+php artisan storage:link || true
+
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
     php artisan migrate --force
 fi

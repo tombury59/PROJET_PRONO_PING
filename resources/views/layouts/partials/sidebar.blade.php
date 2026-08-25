@@ -126,9 +126,11 @@
             x-bind:class="! sidebarOpen && 'lg:justify-center'"
             class="flex items-center gap-3 overflow-hidden rounded-md px-1 py-1 text-surface-700 transition-colors hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-white/5"
         >
-            <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-900 text-xs font-semibold text-white dark:bg-white dark:text-surface-900">
-                {{ auth()->check() ? strtoupper(substr(auth()->user()->pseudo, 0, 1)) : '?' }}
-            </div>
+            @auth
+                <x-avatar :user="auth()->user()" class="size-8" />
+            @else
+                <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-900 text-xs font-semibold text-white dark:bg-white dark:text-surface-900">?</div>
+            @endauth
             <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate text-sm font-medium">
                 {{ auth()->user()->pseudo ?? '' }}
             </span>

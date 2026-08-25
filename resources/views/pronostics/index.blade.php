@@ -145,9 +145,12 @@
 
                 @if ($matchesTraites->isNotEmpty())
                     <section>
-                        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400">
+                        <h3 class="mb-1 text-sm font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400">
                             Mes pronostics
                         </h3>
+                        <p class="mb-4 text-xs text-surface-500 dark:text-surface-400">
+                            Joker ×2 : double les points d'<strong>une seule</strong> rencontre par phase (tant qu'elle n'est pas verrouillée).
+                        </p>
 
                         <x-responsive-table>
                             <x-slot:table>
@@ -173,6 +176,9 @@
                                         >
                                             <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-surface-900 dark:text-white">
                                                 {{ $match->equipe1() }} vs {{ $match->equipe2() }}
+                                                @if ($prono && $prono->joker)
+                                                    <span class="ml-1 rounded-full bg-primary-100 px-2 py-0.5 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">Joker ×2</span>
+                                                @endif
                                             </td>
                                             <td class="whitespace-nowrap px-6 py-4 text-sm text-surface-500 dark:text-surface-400">
                                                 {{ $match->date_heure->format('d/m/Y H:i') }}
@@ -256,15 +262,26 @@
 
                                             <td class="whitespace-nowrap px-6 py-4 text-right">
                                                 @if ($modifiable)
-                                                    <button
-                                                        type="button"
-                                                        x-cloak
-                                                        x-show="!editing"
-                                                        @click="startEdit()"
-                                                        class="text-xs font-semibold uppercase tracking-widest text-surface-500 hover:text-surface-900 dark:text-surface-400 dark:hover:text-white"
-                                                    >
-                                                        Modifier
-                                                    </button>
+                                                    <div class="flex items-center justify-end gap-3">
+                                                        <button
+                                                            type="button"
+                                                            x-cloak
+                                                            x-show="!editing"
+                                                            @click="startEdit()"
+                                                            class="text-xs font-semibold uppercase tracking-widest text-surface-500 hover:text-surface-900 dark:text-surface-400 dark:hover:text-white"
+                                                        >
+                                                            Modifier
+                                                        </button>
+                                                        <form method="POST" action="{{ route('pronostics.joker', $match) }}">
+                                                            @csrf
+                                                            <button
+                                                                type="submit"
+                                                                class="text-xs font-semibold uppercase tracking-widest {{ $prono->joker ? 'text-primary-600 dark:text-primary-400' : 'text-surface-500 hover:text-surface-900 dark:text-surface-400 dark:hover:text-white' }}"
+                                                            >
+                                                                {{ $prono->joker ? 'Retirer le joker' : 'Joker ×2' }}
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 @elseif ($match->date_heure->isPast())
                                                     <a
                                                         href="{{ route('matchs.pronostics', $match) }}"
@@ -293,6 +310,9 @@
                                         <div>
                                             <p class="text-sm font-medium text-surface-900 dark:text-white">
                                                 {{ $match->equipe1() }} vs {{ $match->equipe2() }}
+                                                @if ($prono && $prono->joker)
+                                                    <span class="ml-1 rounded-full bg-primary-100 px-2 py-0.5 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">Joker ×2</span>
+                                                @endif
                                             </p>
                                             <p class="text-xs text-surface-500 dark:text-surface-400">
                                                 {{ $match->date_heure->format('d/m/Y H:i') }}
@@ -384,6 +404,20 @@
                                             <span class="text-sm text-surface-400">Pas de pronostic</span>
                                         @endif
                                     </div>
+
+                                    @if ($modifiable)
+                                        <div class="mt-3 border-t border-surface-100 pt-3 text-right dark:border-surface-800">
+                                            <form method="POST" action="{{ route('pronostics.joker', $match) }}">
+                                                @csrf
+                                                <button
+                                                    type="submit"
+                                                    class="text-xs font-semibold uppercase tracking-widest {{ $prono->joker ? 'text-primary-600 dark:text-primary-400' : 'text-surface-500 hover:text-surface-900 dark:text-surface-400 dark:hover:text-white' }}"
+                                                >
+                                                    {{ $prono->joker ? 'Retirer le joker ×2' : 'Poser le joker ×2' }}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
 
                                     @if ($match->date_heure->isPast())
                                         <div class="mt-3 border-t border-surface-100 pt-3 text-right dark:border-surface-800">

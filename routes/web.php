@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/pronostics', [PronosticController::class, 'index'])->name('pronostics.index');
     Route::post('/pronostics/{match}', [PronosticController::class, 'store'])->name('pronostics.store');
+    Route::post('/pronostics/{match}/joker', [PronosticController::class, 'joker'])->name('pronostics.joker');
     Route::get('/matchs/{match}/pronostics', [MatchPronosticsController::class, 'show'])->name('matchs.pronostics');
 
     Route::get('/classement', [ClassementController::class, 'index'])->name('classement.index');

@@ -105,6 +105,76 @@ class ClassementServiceTest extends TestCase
         $this->assertNull($classement->firstWhere('user.id', $admin->id));
     }
 
+    public function test_classement_counts_winners_found_and_exact_scores(): void
+    {
+        $phase = Phase::factory()->create([
+            'date_debut' => now()->subMonth(),
+            'date_fin' => now()->addMonth(),
+            'reset_classement' => true,
+        ]);
+
+        $joueur = User::factory()->create();
+
+        $matchExact = MatchGame::factory()->for($phase)->create(['resultat_saisi' => true]);
+        $matchIssue = MatchGame::factory()->for($phase)->create(['resultat_saisi' => true]);
+        $matchRate = MatchGame::factory()->for($phase)->create(['resultat_saisi' => true]);
+
+        Pronostic::factory()->for($joueur)->for($matchExact, 'match')->create(['points_obtenus' => 3]);
+        Pronostic::factory()->for($joueur)->for($matchIssue, 'match')->create(['points_obtenus' => 1]);
+        Pronostic::factory()->for($joueur)->for($matchRate, 'match')->create(['points_obtenus' => 0]);
+
+        $entree = app(ClassementService::class)->pourPhase($phase)->firstWhere('user.id', $joueur->id);
+
+        // Vainqueurs trouvés : le score exact (3) + la bonne issue (1) = 2.
+        $this->assertSame(2, $entree['bons_resultats']);
+        $this->assertSame(1, $entree['scores_exacts']);
+    }
+
+    public function test_evolution_accumulates_points_by_match_date(): void
+    {
+        $phase = Phase::factory()->create([
+            'date_debut' => now()->subMonth(),
+            'date_fin' => now()->addMonth(),
+            'reset_classement' => true,
+        ]);
+
+        $joueur = User::factory()->create();
+
+        $match1 = MatchGame::factory()->for($phase)->create([
+            'resultat_saisi' => true,
+            'date_heure' => now()->subDays(10),
+        ]);
+        $match2 = MatchGame::factory()->for($phase)->create([
+            'resultat_saisi' => true,
+            'date_heure' => now()->subDays(3),
+        ]);
+
+        Pronostic::factory()->for($joueur)->for($match1, 'match')->create(['points_obtenus' => 3]);
+        Pronostic::factory()->for($joueur)->for($match2, 'match')->create(['points_obtenus' => 1]);
+
+        $evolution = app(ClassementService::class)->evolution($phase);
+
+        $this->assertCount(2, $evolution['dates']);
+
+        $serie = $evolution['series']->firstWhere('user.id', $joueur->id);
+        $this->assertSame([3, 4], $serie['cumul']);
+        $this->assertSame(4, $serie['final']);
+    }
+
+    public function test_evolution_is_empty_without_resolved_matches(): void
+    {
+        $phase = Phase::factory()->create([
+            'date_debut' => now()->subMonth(),
+            'date_fin' => now()->addMonth(),
+            'reset_classement' => true,
+        ]);
+
+        $evolution = app(ClassementService::class)->evolution($phase);
+
+        $this->assertSame([], $evolution['dates']);
+        $this->assertTrue($evolution['series']->isEmpty());
+    }
+
     public function test_points_are_cumulated_across_chained_phases(): void
     {
         $phase1 = Phase::factory()->create([

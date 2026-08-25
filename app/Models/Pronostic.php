@@ -12,8 +12,15 @@ class Pronostic extends Model
 
     protected $fillable = [
         'user_id', 'match_id', 'prono_vainqueur',
-        'prono_score_j1', 'prono_score_j2', 'points_obtenus',
+        'prono_score_j1', 'prono_score_j2', 'joker', 'points_obtenus',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'joker' => 'boolean',
+        ];
+    }
 
     public function user(): BelongsTo
     {
@@ -33,14 +40,15 @@ class Pronostic extends Model
             return 0;
         }
 
+        $base = 0;
+
         if ($this->prono_score_j1 === $match->score_j1 && $this->prono_score_j2 === $match->score_j2) {
-            return 3;
+            $base = 3;
+        } elseif ($this->prono_vainqueur === $match->vainqueur()) {
+            $base = 1;
         }
 
-        if ($this->prono_vainqueur === $match->vainqueur()) {
-            return 1;
-        }
-
-        return 0;
+        // Le joker double les points de ce pronostic.
+        return $this->joker ? $base * 2 : $base;
     }
 }

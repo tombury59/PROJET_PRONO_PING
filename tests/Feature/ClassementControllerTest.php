@@ -64,8 +64,9 @@ class ClassementControllerTest extends TestCase
         $response->assertOk();
         $response->assertSee('ancien');
 
-        preg_match('/ancien.*?<td[^>]*>\s*(\d+)\s*<\/td>/s', $response->getContent(), $matches);
-        $this->assertSame('0', $matches[1] ?? null);
+        // Colonnes après le pseudo : vainqueurs, scores exacts, puis points.
+        preg_match('/ancien.*?<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>/s', $response->getContent(), $matches);
+        $this->assertSame('0', $matches[3] ?? null);
     }
 
     public function test_global_view_sums_points_across_all_phases(): void
@@ -87,7 +88,8 @@ class ClassementControllerTest extends TestCase
         $response->assertOk();
         $response->assertSee('cumulard');
 
-        preg_match('/cumulard.*?<td[^>]*>\s*(\d+)\s*<\/td>/s', $response->getContent(), $matches);
-        $this->assertSame('7', $matches[1] ?? null);
+        // Colonnes après le pseudo : vainqueurs, scores exacts, puis points.
+        preg_match('/cumulard.*?<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>/s', $response->getContent(), $matches);
+        $this->assertSame('7', $matches[3] ?? null);
     }
 }

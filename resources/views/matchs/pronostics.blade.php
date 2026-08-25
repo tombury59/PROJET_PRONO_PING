@@ -47,10 +47,15 @@
                         @forelse ($pronostics as $prono)
                             <tr class="{{ $prono->user_id === auth()->id() ? 'bg-surface-50 dark:bg-surface-800/60' : '' }}">
                                 <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-surface-900 dark:text-white">
-                                    {{ $prono->user->pseudo }}
-                                    @if ($prono->user_id === auth()->id())
-                                        <span class="ml-1 text-xs text-surface-400">(toi)</span>
-                                    @endif
+                                    <div class="flex items-center gap-3">
+                                        <x-avatar :user="$prono->user" class="size-8" />
+                                        <span>
+                                            {{ $prono->user->pseudo }}
+                                            @if ($prono->user_id === auth()->id())
+                                                <span class="ml-1 text-xs text-surface-400">(toi)</span>
+                                            @endif
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-sm text-surface-700 dark:text-surface-300">
                                     {{ $prono->prono_score_j1 }} - {{ $prono->prono_score_j2 }}
@@ -74,16 +79,19 @@
                 <x-slot:cards>
                     @forelse ($pronostics as $prono)
                         <x-card class="flex items-center justify-between p-4 {{ $prono->user_id === auth()->id() ? 'bg-surface-50 dark:bg-surface-800/60' : '' }}">
-                            <div>
-                                <p class="text-sm font-medium text-surface-900 dark:text-white">
-                                    {{ $prono->user->pseudo }}
-                                    @if ($prono->user_id === auth()->id())
-                                        <span class="ml-1 text-xs text-surface-400">(toi)</span>
-                                    @endif
-                                </p>
-                                <p class="text-xs text-surface-500 dark:text-surface-400">
-                                    Pronostic : {{ $prono->prono_score_j1 }} - {{ $prono->prono_score_j2 }}
-                                </p>
+                            <div class="flex items-center gap-3">
+                                <x-avatar :user="$prono->user" class="size-9" />
+                                <div>
+                                    <p class="text-sm font-medium text-surface-900 dark:text-white">
+                                        {{ $prono->user->pseudo }}
+                                        @if ($prono->user_id === auth()->id())
+                                            <span class="ml-1 text-xs text-surface-400">(toi)</span>
+                                        @endif
+                                    </p>
+                                    <p class="text-xs text-surface-500 dark:text-surface-400">
+                                        Pronostic : {{ $prono->prono_score_j1 }} - {{ $prono->prono_score_j2 }}
+                                    </p>
+                                </div>
                             </div>
                             @if ($match->resultat_saisi)
                                 <span class="text-sm font-semibold text-surface-700 dark:text-surface-300">

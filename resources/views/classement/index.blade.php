@@ -42,12 +42,18 @@
                 </div>
             @endif
 
+            @if (! empty($evolution) && $evolution['series']->isNotEmpty())
+                @include('classement._evolution', ['evolution' => $evolution])
+            @endif
+
             <x-responsive-table>
                 <x-slot:table>
                     <thead class="bg-surface-50 dark:bg-surface-800">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-500 dark:text-surface-400">Rang</th>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-500 dark:text-surface-400">Pseudo</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-surface-500 dark:text-surface-400">Vainqueurs</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-surface-500 dark:text-surface-400">Scores exacts</th>
                             <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-surface-500 dark:text-surface-400">Points</th>
                         </tr>
                     </thead>
@@ -58,10 +64,21 @@
                                     #{{ $i + 1 }}
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-surface-900 dark:text-white">
-                                    {{ $entree['user']->pseudo }}
-                                    @if ($entree['user']->id === auth()->id())
-                                        <span class="ml-1 text-xs text-surface-400">(toi)</span>
-                                    @endif
+                                    <div class="flex items-center gap-3">
+                                        <x-avatar :user="$entree['user']" class="size-8" />
+                                        <span>
+                                            {{ $entree['user']->pseudo }}
+                                            @if ($entree['user']->id === auth()->id())
+                                                <span class="ml-1 text-xs text-surface-400">(toi)</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-center text-sm text-surface-600 dark:text-surface-400">
+                                    {{ $entree['bons_resultats'] }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-center text-sm text-surface-600 dark:text-surface-400">
+                                    {{ $entree['scores_exacts'] }}
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-semibold text-surface-700 dark:text-surface-300">
                                     {{ $entree['points'] }}
@@ -69,7 +86,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-6 py-8 text-center text-sm text-surface-500 dark:text-surface-400">
+                                <td colspan="5" class="px-6 py-8 text-center text-sm text-surface-500 dark:text-surface-400">
                                     Aucun classement disponible pour l'instant.
                                 </td>
                             </tr>
@@ -84,15 +101,21 @@
                                 <span class="text-sm font-semibold text-surface-500 dark:text-surface-400">
                                     #{{ $i + 1 }}
                                 </span>
-                                <span class="text-sm font-medium text-surface-900 dark:text-white">
-                                    {{ $entree['user']->pseudo }}
-                                    @if ($entree['user']->id === auth()->id())
-                                        <span class="ml-1 text-xs text-surface-400">(toi)</span>
-                                    @endif
-                                </span>
+                                <x-avatar :user="$entree['user']" class="size-9" />
+                                <div>
+                                    <span class="text-sm font-medium text-surface-900 dark:text-white">
+                                        {{ $entree['user']->pseudo }}
+                                        @if ($entree['user']->id === auth()->id())
+                                            <span class="ml-1 text-xs text-surface-400">(toi)</span>
+                                        @endif
+                                    </span>
+                                    <p class="text-xs text-surface-500 dark:text-surface-400">
+                                        {{ $entree['bons_resultats'] }} vainqueur(s) · {{ $entree['scores_exacts'] }} score(s) exact(s)
+                                    </p>
+                                </div>
                             </div>
                             <span class="text-sm font-semibold text-surface-700 dark:text-surface-300">
-                                {{ $entree['points'] }}
+                                {{ $entree['points'] }} pts
                             </span>
                         </x-card>
                     @empty

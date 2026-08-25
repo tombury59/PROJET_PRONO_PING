@@ -71,4 +71,33 @@ class PronosticController extends Controller
 
         return back()->with('status', 'Pronostic enregistré.');
     }
+
+    public function joker(Request $request, MatchGame $match): RedirectResponse
+    {
+        abort_if($match->isVerrouille(), 403, 'Ce match est verrouillé, le joker ne peut plus être modifié.');
+
+        $user = $request->user();
+
+        $pronostic = Pronostic::where('user_id', $user->id)->where('match_id', $match->id)->first();
+
+        abort_unless($pronostic, 403, "Fais d'abord ton pronostic avant de poser le joker.");
+
+        // Retrait du joker s'il est déjà sur ce match.
+        if ($pronostic->joker) {
+            $pronostic->update(['joker' => false]);
+
+            return back()->with('status', 'Joker retiré.');
+        }
+
+        // Un seul joker par phase : on le retire des autres pronostics de la
+        // même phase avant de le poser ici.
+        Pronostic::where('user_id', $user->id)
+            ->where('joker', true)
+            ->whereHas('match', fn ($query) => $query->where('phase_id', $match->phase_id))
+            ->update(['joker' => false]);
+
+        $pronostic->update(['joker' => true]);
+
+        return back()->with('status', 'Joker ×2 placé sur '.$match->equipe1().' vs '.$match->equipe2().'.');
+    }
 }

@@ -79,6 +79,17 @@
                             </p>
                         </div>
 
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="rounded-lg bg-white p-4 shadow-sm dark:bg-surface-900">
+                                <p class="text-xs text-surface-500 dark:text-surface-400">Vainqueurs trouvés</p>
+                                <p class="mt-1 text-2xl font-bold text-surface-900 dark:text-white">{{ $mesBonsResultats }}</p>
+                            </div>
+                            <div class="rounded-lg bg-white p-4 shadow-sm dark:bg-surface-900">
+                                <p class="text-xs text-surface-500 dark:text-surface-400">Scores exacts</p>
+                                <p class="mt-1 text-2xl font-bold text-surface-900 dark:text-white">{{ $mesScoresExacts }}</p>
+                            </div>
+                        </div>
+
                         <div class="rounded-lg bg-white p-4 shadow-sm dark:bg-surface-900">
                             <p class="text-xs text-surface-500 dark:text-surface-400">À pronostiquer</p>
                             <p class="mt-1 text-2xl font-bold text-surface-900 dark:text-white">

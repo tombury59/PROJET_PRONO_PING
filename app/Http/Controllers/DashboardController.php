@@ -19,6 +19,8 @@ class DashboardController extends Controller
         $derniersResultats = collect();
         $classement = collect();
         $mesPoints = 0;
+        $mesBonsResultats = 0;
+        $mesScoresExacts = 0;
         $monRang = null;
 
         if ($phase) {
@@ -38,7 +40,10 @@ class DashboardController extends Controller
 
             $classement = $classementService->pourPhase($phase);
             $monRang = $classementService->rangDe($user, $classement);
-            $mesPoints = $classement->firstWhere('user.id', $user->id)['points'] ?? 0;
+            $mesStats = $classement->firstWhere('user.id', $user->id);
+            $mesPoints = $mesStats['points'] ?? 0;
+            $mesBonsResultats = $mesStats['bons_resultats'] ?? 0;
+            $mesScoresExacts = $mesStats['scores_exacts'] ?? 0;
         }
 
         return view('dashboard', [
@@ -47,6 +52,8 @@ class DashboardController extends Controller
             'derniersResultats' => $derniersResultats,
             'classement' => $classement->take(5),
             'mesPoints' => $mesPoints,
+            'mesBonsResultats' => $mesBonsResultats,
+            'mesScoresExacts' => $mesScoresExacts,
             'monRang' => $monRang,
             'nombreJoueurs' => $classement->count(),
         ]);
