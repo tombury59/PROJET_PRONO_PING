@@ -12,7 +12,10 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Lien symbolique public/storage -> storage/app/public (avatars, etc.).
+# S'assure que le stockage (potentiellement monté comme volume) est
+# accessible en écriture par PHP-FPM, puis crée le lien public.
+mkdir -p storage/app/public
+chown -R www-data:www-data storage
 php artisan storage:link || true
 
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
