@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\JourneeController;
 use App\Http\Controllers\Admin\MatchController;
 use App\Http\Controllers\Admin\MatchResultController;
 use App\Http\Controllers\Admin\PhaseController;
@@ -45,6 +46,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('phases', PhaseController::class)->except('show');
+
+    Route::get('journees/create', [JourneeController::class, 'create'])->name('journees.create');
+    Route::post('journees', [JourneeController::class, 'store'])->name('journees.store');
 
     Route::resource('matches', MatchController::class)
         ->except('show')

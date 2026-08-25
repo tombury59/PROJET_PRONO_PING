@@ -5,12 +5,20 @@
                 Matchs
             </h2>
 
-            <a
-                href="{{ route('admin.matches.create') }}"
-                class="rounded-sm bg-surface-900 px-4 py-2 text-sm font-medium text-white hover:bg-surface-700 dark:bg-white dark:text-surface-900 dark:hover:bg-surface-200"
-            >
-                Nouveau match
-            </a>
+            <div class="flex items-center gap-2">
+                <a
+                    href="{{ route('admin.journees.create') }}"
+                    class="rounded-sm bg-surface-900 px-4 py-2 text-sm font-medium text-white hover:bg-surface-700 dark:bg-white dark:text-surface-900 dark:hover:bg-surface-200"
+                >
+                    Nouvelle journée
+                </a>
+                <a
+                    href="{{ route('admin.matches.create') }}"
+                    class="rounded-sm border border-surface-300 px-4 py-2 text-sm font-medium text-surface-700 hover:bg-surface-100 dark:border-surface-700 dark:text-surface-300 dark:hover:bg-white/5"
+                >
+                    Match seul
+                </a>
+            </div>
         </div>
     </x-slot>
 

@@ -7,6 +7,7 @@ use App\Models\QuestionBonus;
 use App\Models\User;
 use App\Notifications\BonusResolu;
 use App\Notifications\NouveauMatchDisponible;
+use App\Notifications\NouvelleJourneeDisponible;
 use App\Notifications\NouvelleQuestionBonus;
 use App\Notifications\RappelPronostics;
 use App\Notifications\ResultatADeposer;
@@ -21,6 +22,13 @@ class NotificationService
         $joueurs = User::where('role', 'joueur')->get();
 
         Notification::send($joueurs, new NouveauMatchDisponible($match));
+    }
+
+    public function journeeCree(int $nbRencontres, int $nbQuestionsBonus = 0): void
+    {
+        $joueurs = User::where('role', 'joueur')->get();
+
+        Notification::send($joueurs, new NouvelleJourneeDisponible($nbRencontres, $nbQuestionsBonus));
     }
 
     public function resultatSaisi(MatchGame $match): void
