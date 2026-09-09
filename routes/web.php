@@ -14,6 +14,7 @@ use App\Http\Controllers\MatchPronosticsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PronosticController;
+use App\Http\Controllers\PushSubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,6 +39,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/bonus', [BonusController::class, 'index'])->name('bonus.index');
     Route::post('/bonus/{question}', [BonusController::class, 'store'])->name('bonus.store');
+
+    Route::post('/push/subscriptions', [PushSubscriptionController::class, 'store'])->name('push.store');
+    Route::delete('/push/subscriptions', [PushSubscriptionController::class, 'destroy'])->name('push.destroy');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/marquer-tout-lu', [NotificationController::class, 'marquerToutLu'])->name('notifications.marquer-tout-lu');

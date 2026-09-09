@@ -3,6 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
+use NotificationChannels\WebPush\WebPushChannel;
+use NotificationChannels\WebPush\WebPushMessage;
 
 class NouvelleJourneeDisponible extends Notification
 {
@@ -14,10 +16,10 @@ class NouvelleJourneeDisponible extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', WebPushChannel::class];
     }
 
-    public function toArray(object $notifiable): array
+    private function message(): string
     {
         $message = "Nouvelle journée : {$this->nbRencontres} rencontre(s) à pronostiquer";
 
@@ -25,11 +27,25 @@ class NouvelleJourneeDisponible extends Notification
             $message .= " et {$this->nbQuestionsBonus} question(s) bonus";
         }
 
+        return $message.' !';
+    }
+
+    public function toArray(object $notifiable): array
+    {
         return [
             'nb_rencontres' => $this->nbRencontres,
             'nb_questions_bonus' => $this->nbQuestionsBonus,
-            'message' => $message.' !',
+            'message' => $this->message(),
             'url' => route('pronostics.index'),
         ];
+    }
+
+    public function toWebPush(object $notifiable, Notification $notification): WebPushMessage
+    {
+        return (new WebPushMessage)
+            ->title('Nouvelle journée')
+            ->icon('/icons/icon-192.png')
+            ->body($this->message())
+            ->data(['url' => route('pronostics.index')]);
     }
 }

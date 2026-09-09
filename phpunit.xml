@@ -32,5 +32,8 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="VAPID_SUBJECT" value="mailto:test@prono.local"/>
+        <env name="VAPID_PUBLIC_KEY" value="BNmz3qLzF0mQ84Srrm2u-mZszU-0d_ARk6dyGpq7_BbXYZ61gWZk2jqoKMGcR8DM25PY5QaK0T5-Tu50JsMybvA"/>
+        <env name="VAPID_PRIVATE_KEY" value="PliQ5q8GDQNZWwo7Sqsg79YS2RPBqf3571z438A5qRY"/>
     </php>
 </phpunit>

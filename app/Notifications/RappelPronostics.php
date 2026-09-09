@@ -4,6 +4,8 @@ namespace App\Notifications;
 
 use App\Models\MatchGame;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\WebPush\WebPushChannel;
+use NotificationChannels\WebPush\WebPushMessage;
 
 class RappelPronostics extends Notification
 {
@@ -18,22 +20,34 @@ class RappelPronostics extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', WebPushChannel::class];
+    }
+
+    private function message(): string
+    {
+        $rencontre = "{$this->match->equipe1()} vs {$this->match->equipe2()}";
+
+        return $this->echeance === 'j2'
+            ? "Plus que 2 jours pour pronostiquer {$rencontre} !"
+            : "Dernières 24h pour pronostiquer {$rencontre} !";
     }
 
     public function toArray(object $notifiable): array
     {
-        $rencontre = "{$this->match->equipe1()} vs {$this->match->equipe2()}";
-
-        $message = $this->echeance === 'j2'
-            ? "Plus que 2 jours pour pronostiquer {$rencontre} !"
-            : "Dernières 24h pour pronostiquer {$rencontre} !";
-
         return [
             'match_id' => $this->match->id,
             'echeance' => $this->echeance,
-            'message' => $message,
+            'message' => $this->message(),
             'url' => route('pronostics.index'),
         ];
+    }
+
+    public function toWebPush(object $notifiable, Notification $notification): WebPushMessage
+    {
+        return (new WebPushMessage)
+            ->title('Pronostics')
+            ->icon('/icons/icon-192.png')
+            ->body($this->message())
+            ->data(['url' => route('pronostics.index')]);
     }
 }
