@@ -4,10 +4,10 @@
         mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         sidebarOpen ? 'lg:w-64' : 'lg:w-20',
     ]"
-    class="fixed inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col border-r border-surface-200 bg-white transition-all duration-200 ease-in-out lg:relative dark:border-surface-800 dark:bg-surface-950"
+    class="fixed inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col border-r border-primary-100 bg-primary-50 transition-all duration-200 ease-in-out lg:relative dark:border-primary-900/50 dark:bg-primary-950"
 >
     <!-- Logo / brand -->
-    <div class="flex h-16 shrink-0 items-center gap-2 border-b border-surface-200 px-4 dark:border-surface-800">
+    <div class="flex h-16 shrink-0 items-center gap-2 border-b border-primary-100 px-4 dark:border-primary-900/50">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-2 overflow-hidden">
             <x-application-logo class="h-8 w-8 shrink-0 fill-current text-surface-900 dark:text-white" />
             <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate font-semibold text-surface-900 dark:text-white">
@@ -64,7 +64,7 @@
 
         <!-- Administration -->
         @if (auth()->user()?->isAdmin())
-            <div class="mt-4 border-t border-surface-200 pt-4 dark:border-surface-800">
+            <div class="mt-4 border-t border-primary-100 pt-4 dark:border-primary-900/50">
                 <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="block px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-surface-400 dark:text-surface-500">
                     Administration
                 </span>
@@ -88,6 +88,12 @@
                         </svg>
                     </x-sidebar-link>
 
+                    <x-sidebar-link route="admin.apparence.edit" active-pattern="admin.apparence.*" label="Apparence">
+                        <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                        </svg>
+                    </x-sidebar-link>
+
                     <x-sidebar-link route="admin.users.index" active-pattern="admin.users.*" label="Utilisateurs">
                         <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14 12.25C13.2583 12.25 12.5333 12.0301 11.9166 11.618C11.2999 11.206 10.8193 10.6203 10.5355 9.93506C10.2516 9.24984 10.1774 8.49584 10.3221 7.76841C10.4668 7.04098 10.8239 6.3728 11.3484 5.84835C11.8728 5.3239 12.541 4.96675 13.2684 4.82206C13.9958 4.67736 14.7498 4.75162 15.4351 5.03545C16.1203 5.31928 16.706 5.79993 17.118 6.41661C17.5301 7.0333 17.75 7.75832 17.75 8.5C17.75 9.49456 17.3549 10.4484 16.6517 11.1517C15.9484 11.8549 14.9946 12.25 14 12.25ZM14 6.25C13.555 6.25 13.12 6.38196 12.75 6.62919C12.38 6.87643 12.0916 7.22783 11.9213 7.63896C11.751 8.0501 11.7064 8.5025 11.7932 8.93895C11.8801 9.37541 12.0943 9.77632 12.409 10.091C12.7237 10.4057 13.1246 10.62 13.561 10.7068C13.9975 10.7936 14.4499 10.749 14.861 10.5787C15.2722 10.4084 15.6236 10.12 15.8708 9.75003C16.118 9.38002 16.25 8.94501 16.25 8.5C16.25 7.90326 16.0129 7.33097 15.591 6.90901C15.169 6.48705 14.5967 6.25 14 6.25Z" />
@@ -106,7 +112,7 @@
     <button
         @click="sidebarOpen = !sidebarOpen"
         x-bind:class="! sidebarOpen && 'lg:justify-center lg:px-0'"
-        class="hidden shrink-0 items-center gap-3 border-t border-surface-200 px-4 py-3 text-sm font-medium text-surface-500 hover:bg-surface-100 hover:text-surface-900 lg:flex dark:border-surface-800 dark:text-surface-400 dark:hover:bg-white/5 dark:hover:text-white"
+        class="hidden shrink-0 items-center gap-3 border-t border-primary-100 px-4 py-3 text-sm font-medium text-surface-500 hover:bg-primary-100 hover:text-surface-900 lg:flex dark:border-surface-800 dark:text-surface-400 dark:hover:bg-white/5 dark:hover:text-white"
     >
         <svg
             class="size-5 shrink-0 transition-transform"
@@ -119,7 +125,7 @@
     </button>
 
     <!-- User / logout -->
-    <div class="shrink-0 border-t border-surface-200 p-3 dark:border-surface-800">
+    <div class="shrink-0 border-t border-primary-100 p-3 dark:border-primary-900/50">
         <a
             href="{{ route('profile.edit') }}"
             @click="mobileOpen = false"

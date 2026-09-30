@@ -7,7 +7,7 @@
 
             <a
                 href="{{ route('admin.questions-bonus.create') }}"
-                class="rounded-sm bg-surface-900 px-4 py-2 text-sm font-medium text-white hover:bg-surface-700 dark:bg-white dark:text-surface-900 dark:hover:bg-surface-200"
+                class="rounded-sm bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 dark:bg-primary-500 dark:text-white dark:hover:bg-primary-600"
             >
                 Nouvelle question
             </a>

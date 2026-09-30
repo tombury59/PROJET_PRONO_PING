@@ -32,7 +32,7 @@
                             class="rounded-md px-3 py-2 text-sm font-medium"
                             x-bind:class="subscribed
                                 ? 'border border-surface-300 text-surface-700 hover:bg-surface-100 dark:border-surface-700 dark:text-surface-300 dark:hover:bg-white/5'
-                                : 'bg-surface-900 text-white hover:bg-surface-700 dark:bg-white dark:text-surface-900 dark:hover:bg-surface-200'"
+                                : 'bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-500 dark:text-white dark:hover:bg-primary-600'"
                         >
                             <span x-show="! busy" x-text="subscribed ? 'Désactiver' : 'Activer les notifications'"></span>
                             <span x-show="busy">…</span>

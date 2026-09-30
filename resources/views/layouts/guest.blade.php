@@ -15,6 +15,9 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Thème (couleur choisie par l'admin) -->
+        @include('layouts.partials.theme')
     </head>
     <body class="font-sans text-surface-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-surface-100">

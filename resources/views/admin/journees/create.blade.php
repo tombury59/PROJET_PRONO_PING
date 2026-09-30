@@ -71,7 +71,7 @@
                                 <button
                                     type="button"
                                     @click="ajouterRencontre()"
-                                    class="rounded-md bg-surface-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-surface-700 dark:bg-white dark:text-surface-900 dark:hover:bg-surface-200"
+                                    class="rounded-md bg-primary-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-primary-700 dark:bg-primary-500 dark:text-white dark:hover:bg-primary-600"
                                 >
                                     + Ajouter une rencontre
                                 </button>

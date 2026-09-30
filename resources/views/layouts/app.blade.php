@@ -15,6 +15,9 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Thème (couleur choisie par l'admin) -->
+        @include('layouts.partials.theme')
     </head>
     <body class="font-sans antialiased">
         <div
@@ -42,7 +45,7 @@
 
             <div class="flex h-svh w-full flex-col overflow-y-auto">
                 <!-- Mobile top bar -->
-                <div class="flex shrink-0 items-center gap-3 border-b border-surface-200 bg-white px-4 py-3 lg:hidden dark:border-surface-800 dark:bg-surface-950">
+                <div class="flex shrink-0 items-center gap-3 border-b border-primary-100 bg-primary-50 px-4 py-3 lg:hidden dark:border-primary-900/50 dark:bg-primary-950">
                     <button
                         @click="mobileOpen = true"
                         class="rounded-sm p-1.5 text-surface-600 hover:bg-black/5 hover:text-surface-900 dark:text-surface-300 dark:hover:bg-white/5 dark:hover:text-white"
@@ -57,7 +60,7 @@
                     @include('layouts.partials.notification-bell')
                 </div>
 
-                <header class="border-b border-surface-200 bg-white dark:border-surface-800 dark:bg-surface-950">
+                <header class="border-b border-primary-100 bg-primary-50 dark:border-primary-900/50 dark:bg-primary-950">
                     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
                         <div class="min-w-0 flex-1">
                             @isset($header)

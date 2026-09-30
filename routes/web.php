@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ApparenceController;
 use App\Http\Controllers\Admin\JourneeController;
 use App\Http\Controllers\Admin\MatchController;
 use App\Http\Controllers\Admin\MatchResultController;
@@ -68,6 +69,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::patch('questions-bonus/{question}/reponses/{reponse}', [AdminQuestionBonusController::class, 'accorderPoints'])
         ->name('questions-bonus.reponses.update');
+
+    Route::get('apparence', [ApparenceController::class, 'edit'])->name('apparence.edit');
+    Route::post('apparence', [ApparenceController::class, 'update'])->name('apparence.update');
 
     Route::get('utilisateurs', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('utilisateurs/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role.update');

@@ -13,11 +13,25 @@ import forms from '@tailwindcss/forms';
  *   Pour changer de couleur, remplacer la palette Tailwind associée
  *   (ex: `primary: colors.blue`) ou fournir une palette personnalisée
  *   avec les mêmes nuances 50 → 950.
+ *
+ * NB : `primary` est piloté à l'exécution par l'admin (page Apparence).
+ *   Ses nuances pointent sur des variables CSS `--color-primary-*` injectées
+ *   dans le <head> (cf. App\Support\Theme + partials/theme.blade.php).
  */
+
+/** Palette dont chaque nuance lit une variable CSS `--color-primary-<n>`. */
+const cssVarPalette = (name) =>
+    Object.fromEntries(
+        [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((shade) => [
+            shade,
+            `rgb(var(--color-${name}-${shade}) / <alpha-value>)`,
+        ])
+    );
+
 const theme = {
     fontFamily: 'Figtree',
     colors: {
-        primary: colors.indigo,
+        primary: cssVarPalette('primary'),
         surface: colors.neutral,
         success: colors.green,
         warning: colors.amber,

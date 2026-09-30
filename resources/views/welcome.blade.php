@@ -25,14 +25,14 @@
                     @auth
                         <a
                             href="{{ route('dashboard') }}"
-                            class="px-5 py-2.5 rounded-md bg-surface-900 text-white text-sm font-medium hover:bg-surface-700 transition"
+                            class="px-5 py-2.5 rounded-md bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition"
                         >
                             Accéder au tableau de bord
                         </a>
                     @else
                         <a
                             href="{{ route('login') }}"
-                            class="px-5 py-2.5 rounded-md bg-surface-900 text-white text-sm font-medium hover:bg-surface-700 transition"
+                            class="px-5 py-2.5 rounded-md bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition"
                         >
                             Se connecter
                         </a>
