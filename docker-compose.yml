@@ -12,6 +12,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # Persiste les fichiers uploadés (logo, avatars...) hors de l'image :
+    # ils survivent aux rebuilds / recréations du conteneur.
+    volumes:
+      - storage_data:/var/www/html/storage/app/public
+    restart: unless-stopped
 
   db:
     image: postgres:16-alpine
@@ -30,6 +35,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
 
 volumes:
   db_data:
+  storage_data:
