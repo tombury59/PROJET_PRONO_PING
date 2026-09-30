@@ -27,6 +27,7 @@
                 @endphp
 
                 <div x-data="{
+                    previewDark: document.documentElement.classList.contains('dark'),
                     fields: {
                         btn: '{{ $zones[0][2] }}',
                         header: '{{ $zones[1][2] }}',
@@ -51,12 +52,25 @@
                         const m = (v) => Math.round(v + (255 - v) * w).toString(16).padStart(2, '0');
                         return '#' + m(parseInt(c.substr(0, 2), 16)) + m(parseInt(c.substr(2, 2), 16)) + m(parseInt(c.substr(4, 2), 16));
                     },
+                    mixBlack(hex, w) {
+                        const c = hex.replace('#', '');
+                        const m = (v) => Math.round(v * (1 - w)).toString(16).padStart(2, '0');
+                        return '#' + m(parseInt(c.substr(0, 2), 16)) + m(parseInt(c.substr(2, 2), 16)) + m(parseInt(c.substr(4, 2), 16));
+                    },
                     applyTheme(base) {
                         this.fields.btn = base;
                         this.fields.header = this.lighten(base, 0.80);
                         this.fields.navbar = this.lighten(base, 0.80);
                         this.fields.page = this.lighten(base, 0.90);
                     },
+                    // Couleurs réellement rendues : mode clair = choix admin,
+                    // mode sombre = teintes profondes dérivées de la couleur des boutons
+                    // (identique à App\Support\Theme).
+                    zonePage() { return this.previewDark ? this.mixBlack(this.fields.btn, 0.90) : this.fields.page; },
+                    zoneHeader() { return this.previewDark ? this.mixBlack(this.fields.btn, 0.82) : this.fields.header; },
+                    zoneNavbar() { return this.previewDark ? this.mixBlack(this.fields.btn, 0.82) : this.fields.navbar; },
+                    zoneHeaderFg() { return this.previewDark ? '#f5f5f5' : this.contrast(this.fields.header); },
+                    zoneNavbarFg() { return this.previewDark ? '#f5f5f5' : this.contrast(this.fields.navbar); },
                 }" class="grid gap-6 lg:grid-cols-2">
                 <x-card class="p-6">
                     <h3 class="text-base font-semibold text-surface-900 dark:text-white">Couleurs</h3>
@@ -102,14 +116,42 @@
 
                 {{-- Aperçu live --}}
                 <x-card class="p-6">
-                    <h3 class="text-base font-semibold text-surface-900 dark:text-white">Aperçu</h3>
-                    <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
-                        Rendu mis à jour en direct selon tes couleurs.
-                    </p>
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <h3 class="text-base font-semibold text-surface-900 dark:text-white">Aperçu</h3>
+                            <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
+                                Rendu en direct — clair ou sombre.
+                            </p>
+                        </div>
 
-                    <div class="mt-4 overflow-hidden rounded-lg border border-surface-200 shadow-inner dark:border-surface-700" x-bind:style="`background-color: ${fields.page}`">
+                        {{-- Bascule soleil / lune de l'aperçu --}}
+                        <div class="flex shrink-0 rounded-lg border border-surface-200 p-0.5 dark:border-surface-700">
+                            <button type="button" @click="previewDark = false"
+                                class="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition"
+                                x-bind:class="!previewDark ? 'bg-surface-900 text-white dark:bg-white dark:text-surface-900' : 'text-surface-500'"
+                                title="Aperçu clair">
+                                <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                                Clair
+                            </button>
+                            <button type="button" @click="previewDark = true"
+                                class="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition"
+                                x-bind:class="previewDark ? 'bg-surface-900 text-white dark:bg-white dark:text-surface-900' : 'text-surface-500'"
+                                title="Aperçu sombre">
+                                <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                </svg>
+                                Sombre
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 overflow-hidden rounded-lg border shadow-inner"
+                        x-bind:class="previewDark ? 'border-surface-700' : 'border-surface-200'"
+                        x-bind:style="`background-color: ${zonePage()}`">
                         {{-- Header --}}
-                        <div class="flex items-center justify-between px-3 py-2" x-bind:style="`background-color: ${fields.header}; color: ${contrast(fields.header)}`">
+                        <div class="flex items-center justify-between px-3 py-2" x-bind:style="`background-color: ${zoneHeader()}; color: ${zoneHeaderFg()}`">
                             <span class="text-xs font-semibold">Tableau de bord</span>
                             <svg class="size-3.5 opacity-80" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1h6z" />
@@ -118,7 +160,7 @@
 
                         <div class="flex" style="min-height: 190px">
                             {{-- Navbar --}}
-                            <div class="w-28 shrink-0 space-y-1.5 p-2" x-bind:style="`background-color: ${fields.navbar}; color: ${contrast(fields.navbar)}`">
+                            <div class="w-28 shrink-0 space-y-1.5 p-2" x-bind:style="`background-color: ${zoneNavbar()}; color: ${zoneNavbarFg()}`">
                                 <div class="rounded px-2 py-1 text-[10px] font-medium" x-bind:style="`background-color: ${fields.btn}; color: ${contrast(fields.btn)}`">Accueil</div>
                                 <div class="rounded px-2 py-1 text-[10px] opacity-80">Pronostics</div>
                                 <div class="rounded px-2 py-1 text-[10px] opacity-80">Classement</div>
@@ -127,9 +169,11 @@
 
                             {{-- Contenu --}}
                             <div class="flex-1 p-3">
-                                <div class="rounded-md border border-surface-200 bg-white p-3 shadow-sm">
-                                    <div class="h-2 w-2/3 rounded bg-surface-200"></div>
-                                    <div class="mt-2 h-2 w-1/2 rounded bg-surface-100"></div>
+                                <div class="rounded-md border p-3 shadow-sm"
+                                    x-bind:class="previewDark ? 'border-surface-700' : 'border-surface-200'"
+                                    x-bind:style="`background-color: ${previewDark ? '#1f1f1f' : '#ffffff'}`">
+                                    <div class="h-2 w-2/3 rounded" x-bind:class="previewDark ? 'bg-surface-600' : 'bg-surface-200'"></div>
+                                    <div class="mt-2 h-2 w-1/2 rounded" x-bind:class="previewDark ? 'bg-surface-700' : 'bg-surface-100'"></div>
                                     <div class="mt-3 flex items-center gap-2">
                                         <button type="button" class="rounded px-3 py-1 text-[11px] font-medium" x-bind:style="`background-color: ${fields.btn}; color: ${contrast(fields.btn)}`">Bouton</button>
                                         <span class="text-[11px] font-medium" x-bind:style="`color: ${fields.btn}`">Lien</span>

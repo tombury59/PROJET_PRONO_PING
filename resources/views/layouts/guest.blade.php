@@ -18,16 +18,19 @@
 
         <!-- Thème (couleur choisie par l'admin) -->
         @include('layouts.partials.theme')
+
+        <!-- Mode sombre (avant rendu, anti-clignotement) -->
+        @include('layouts.partials.color-mode')
     </head>
-    <body class="font-sans text-surface-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-surface-100">
+    <body class="font-sans text-surface-900 antialiased dark:text-surface-100">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-surface-100 dark:bg-surface-950">
             <div>
                 <a href="/">
                     <x-application-logo class="w-20 h-20 fill-current text-surface-500" />
                 </a>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-surface-900 shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
         </div>

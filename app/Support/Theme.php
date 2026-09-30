@@ -144,6 +144,48 @@ class Theme
         return "rgba($r, $g, $b, $alpha)";
     }
 
+    /** Mélange une couleur vers le noir ($w = 0 inchangé, 1 = noir). */
+    private static function mixBlack(string $hex, float $w): string
+    {
+        [$r, $g, $b] = sscanf($hex, '#%02x%02x%02x');
+
+        return sprintf(
+            '#%02x%02x%02x',
+            (int) round($r * (1 - $w)),
+            (int) round($g * (1 - $w)),
+            (int) round($b * (1 - $w)),
+        );
+    }
+
+    /**
+     * Variables de zones pour le mode sombre : teintes profondes dérivées de
+     * la couleur des boutons, pour garder l'identité de marque en sombre.
+     *
+     * @return array<string, string>
+     */
+    private static function darkZoneVariables(): array
+    {
+        $primary = static::primary();
+
+        $page = static::mixBlack($primary, 0.90);
+        $header = static::mixBlack($primary, 0.82);
+        $navbar = static::mixBlack($primary, 0.82);
+
+        // Sur ces fonds sombres le texte est toujours clair.
+        $fg = '#f5f5f5';
+
+        return [
+            '--zone-page' => $page,
+            '--zone-header' => $header,
+            '--zone-header-fg' => $fg,
+            '--zone-header-border' => static::overlay($fg, 0.14),
+            '--zone-navbar' => $navbar,
+            '--zone-navbar-fg' => $fg,
+            '--zone-navbar-border' => static::overlay($fg, 0.16),
+            '--zone-navbar-hover' => static::overlay($fg, 0.12),
+        ];
+    }
+
     /**
      * Bloc `:root` : palette primary-* (r g b) + variables de zones.
      */
@@ -172,6 +214,12 @@ class Theme
         $lines .= '--zone-navbar-border:'.static::overlay($navFg, 0.15).';';
         $lines .= '--zone-navbar-hover:'.static::overlay($navFg, 0.12).';';
 
-        return ":root{{$lines}}";
+        // Surcharges des zones en mode sombre (classe .dark sur <html>).
+        $dark = '';
+        foreach (static::darkZoneVariables() as $name => $value) {
+            $dark .= "{$name}:{$value};";
+        }
+
+        return ":root{{$lines}}html.dark{{$dark}}";
     }
 }

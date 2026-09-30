@@ -33,3 +33,22 @@
 [x-cloak] {
     display: none !important;
 }
+
+/*
+ * Bascule clair/sombre : on désactive le fondu par défaut. La capture de
+ * l'ancien écran reste figée en fond, et la nouvelle vue se révèle en cercle
+ * (animation clip-path pilotée en JS depuis le bouton, cf. color-mode).
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+    z-index: 1;
+}
+
+::view-transition-new(root) {
+    z-index: 9999;
+}

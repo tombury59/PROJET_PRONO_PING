@@ -41,6 +41,10 @@ const theme = {
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    // Mode sombre piloté par la classe `.dark` sur <html> (toggle utilisateur),
+    // et non plus par la préférence système seule.
+    darkMode: 'class',
+
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',

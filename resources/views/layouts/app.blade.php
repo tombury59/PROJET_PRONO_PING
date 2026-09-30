@@ -18,6 +18,9 @@
 
         <!-- Thème (couleur choisie par l'admin) -->
         @include('layouts.partials.theme')
+
+        <!-- Mode sombre (avant rendu, anti-clignotement) -->
+        @include('layouts.partials.color-mode')
     </head>
     <body class="font-sans antialiased">
         <div
@@ -57,6 +60,7 @@
                     </button>
                     <span class="mr-auto font-semibold text-[color:var(--zone-header-fg)]">{{ config('app.name') }}</span>
 
+                    @include('layouts.partials.dark-toggle')
                     @include('layouts.partials.notification-bell')
                 </div>
 
@@ -68,7 +72,8 @@
                             @endisset
                         </div>
 
-                        <div class="ml-4 hidden shrink-0 lg:block">
+                        <div class="ml-4 hidden shrink-0 items-center gap-1 lg:flex">
+                            @include('layouts.partials.dark-toggle')
                             @include('layouts.partials.notification-bell')
                         </div>
                     </div>
