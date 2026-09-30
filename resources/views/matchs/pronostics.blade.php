@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between gap-2">
-            <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
+            <h2 class="text-xl font-semibold leading-tight text-[color:var(--zone-header-fg)]">
                 Pronostics — {{ $match->equipe1() }} vs {{ $match->equipe2() }}
             </h2>
             <a

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
+            <h2 class="text-xl font-semibold leading-tight text-[color:var(--zone-header-fg)]">
                 Calendrier — {{ $mois->translatedFormat('F Y') }}
             </h2>
 
@@ -76,7 +76,7 @@
 
                             <div class="relative flex items-center justify-between">
                                 <span
-                                    class="flex size-6 items-center justify-center rounded-full text-xs font-medium {{ $estAujourdhui ? 'bg-surface-900 text-white dark:bg-white dark:text-surface-900' : ($horsMois ? 'text-surface-300 dark:text-surface-700' : 'text-surface-600 dark:text-surface-300') }}"
+                                    class="flex size-6 items-center justify-center rounded-full text-xs font-medium {{ $estAujourdhui ? 'bg-primary-600 text-white dark:bg-primary-500 dark:text-white' : ($horsMois ? 'text-surface-300 dark:text-surface-700' : 'text-surface-600 dark:text-surface-300') }}"
                                 >
                                     {{ $jour->day }}
                                 </span>

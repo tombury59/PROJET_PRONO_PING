@@ -1,20 +1,20 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
+            <h2 class="text-xl font-semibold leading-tight text-[color:var(--zone-header-fg)]">
                 Matchs
             </h2>
 
             <div class="flex items-center gap-2">
                 <a
                     href="{{ route('admin.journees.create') }}"
-                    class="rounded-sm bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 dark:bg-primary-500 dark:text-white dark:hover:bg-primary-600"
+                    class="rounded-sm bg-white px-4 py-2 text-sm font-medium text-primary-700 shadow-sm hover:bg-primary-50"
                 >
                     Nouvelle journée
                 </a>
                 <a
                     href="{{ route('admin.matches.create') }}"
-                    class="rounded-sm border border-surface-300 px-4 py-2 text-sm font-medium text-surface-700 hover:bg-surface-100 dark:border-surface-700 dark:text-surface-300 dark:hover:bg-white/5"
+                    class="rounded-sm border border-white/40 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
                 >
                     Match seul
                 </a>

@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
+            <h2 class="text-xl font-semibold leading-tight text-[color:var(--zone-header-fg)]">
                 Phases
             </h2>
 
             <a
                 href="{{ route('admin.phases.create') }}"
-                class="rounded-sm bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 dark:bg-primary-500 dark:text-white dark:hover:bg-primary-600"
+                class="rounded-sm bg-white px-4 py-2 text-sm font-medium text-primary-700 shadow-sm hover:bg-primary-50"
             >
                 Nouvelle phase
             </a>

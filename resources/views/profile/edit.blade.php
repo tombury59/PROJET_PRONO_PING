@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
+        <h2 class="text-xl font-semibold leading-tight text-[color:var(--zone-header-fg)]">
             Profile
         </h2>
     </x-slot>

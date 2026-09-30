@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-surface-900 dark:text-white">
+        <h2 class="text-xl font-semibold leading-tight text-[color:var(--zone-header-fg)]">
             Classement
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="mx-auto sm:px-6 lg:px-8">
-            <x-card class="mt-5 space-y-4 p-4">
+            <div class="mt-5 space-y-4 p-4">
             @if ($phases->isNotEmpty())
                 <form method="GET" action="{{ route('classement.index') }}" class="max-w-xs">
                     <x-input-label for="vue" value="Vue" />
@@ -125,7 +125,7 @@
                     @endforelse
                 </x-slot:cards>
             </x-responsive-table>
-            </x-card>
+            </div>
         </div>
     </div>
 </x-app-layout>

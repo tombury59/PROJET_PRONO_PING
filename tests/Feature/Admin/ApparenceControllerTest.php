@@ -31,7 +31,8 @@ class ApparenceControllerTest extends TestCase
 
         $this->actingAs($admin)->get('/admin/apparence')
             ->assertOk()
-            ->assertSee('Couleur principale')
+            ->assertSee('Couleurs')
+            ->assertSee('Navbar (menu latéral)')
             ->assertSee('Logo');
     }
 
@@ -40,10 +41,35 @@ class ApparenceControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
-            ->post('/admin/apparence', ['primary_color' => 'emerald'])
+            ->post('/admin/apparence', ['primary_color' => '#10b981'])
             ->assertRedirect(route('admin.apparence.edit'));
 
-        $this->assertSame('emerald', Setting::get('primary_color'));
+        $this->assertSame('#10b981', Setting::get('primary_color'));
+    }
+
+    public function test_admin_can_set_zone_colors_independently(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)->post('/admin/apparence', [
+            'primary_color' => '#4f46e5',
+            'color_header' => '#1e293b',
+            'color_navbar' => '#0f172a',
+            'color_page' => '#f8fafc',
+        ])->assertRedirect(route('admin.apparence.edit'));
+
+        $this->assertSame('#1e293b', Setting::get('color_header'));
+        $this->assertSame('#0f172a', Setting::get('color_navbar'));
+        $this->assertSame('#f8fafc', Setting::get('color_page'));
+    }
+
+    public function test_invalid_zone_color_is_rejected(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)
+            ->post('/admin/apparence', ['primary_color' => '#4f46e5', 'color_navbar' => 'nope'])
+            ->assertSessionHasErrors('color_navbar');
     }
 
     public function test_invalid_color_is_rejected(): void
@@ -61,7 +87,7 @@ class ApparenceControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)->post('/admin/apparence', [
-            'primary_color' => 'indigo',
+            'primary_color' => '#4f46e5',
             'logo' => UploadedFile::fake()->image('logo.png'),
         ])->assertRedirect(route('admin.apparence.edit'));
 
@@ -78,7 +104,7 @@ class ApparenceControllerTest extends TestCase
         Setting::set('logo_path', $path);
 
         $this->actingAs($admin)->post('/admin/apparence', [
-            'primary_color' => 'indigo',
+            'primary_color' => '#4f46e5',
             'supprimer_logo' => '1',
         ])->assertRedirect(route('admin.apparence.edit'));
 

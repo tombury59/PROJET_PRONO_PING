@@ -33,7 +33,7 @@
                         type="file"
                         accept="image/png,image/jpeg,image/webp"
                         x-on:change="const f = $event.target.files[0]; apercu = f ? URL.createObjectURL(f) : null"
-                        class="block text-sm text-surface-600 file:mr-3 file:rounded-md file:border-0 file:bg-surface-900 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-surface-700 dark:text-surface-300 dark:file:bg-white dark:file:text-surface-900"
+                        class="block text-sm text-surface-600 file:mr-3 file:rounded-md file:border-0 file:bg-primary-600 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-primary-700 dark:text-surface-300 dark:file:bg-primary-500 dark:file:text-white"
                     />
                     <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">JPG, PNG ou WebP, 2 Mo max.</p>
 

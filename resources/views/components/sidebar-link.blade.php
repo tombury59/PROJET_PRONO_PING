@@ -6,7 +6,7 @@
     $classes = 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ' .
         ($isActive
             ? 'bg-primary-600 text-white dark:bg-primary-500 dark:text-white'
-            : 'text-surface-700 hover:bg-primary-100 dark:text-surface-300 dark:hover:bg-white/5');
+            : 'text-[color:var(--zone-navbar-fg)] hover:bg-[var(--zone-navbar-hover)]');
 @endphp
 
 <a

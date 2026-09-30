@@ -18,6 +18,16 @@
     --color-primary-800: 55 48 163;
     --color-primary-900: 49 46 129;
     --color-primary-950: 30 27 75;
+
+    /* Zones (surchargées à l'exécution selon les choix admin). */
+    --zone-page: #eef2ff;
+    --zone-header: #e0e7ff;
+    --zone-header-fg: #171717;
+    --zone-header-border: rgba(23, 23, 23, 0.12);
+    --zone-navbar: #e0e7ff;
+    --zone-navbar-fg: #171717;
+    --zone-navbar-border: rgba(23, 23, 23, 0.15);
+    --zone-navbar-hover: rgba(23, 23, 23, 0.12);
 }
 
 [x-cloak] {

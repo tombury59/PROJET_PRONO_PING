@@ -12,24 +12,46 @@ use Illuminate\View\View;
 
 class ApparenceController extends Controller
 {
+    /** Zones dont la couleur est réglable indépendamment. */
+    private const ZONES = ['color_header', 'color_navbar', 'color_page'];
+
     public function edit(): View
     {
         return view('admin.apparence.edit', [
-            'palettes' => Theme::palettes(),
-            'couleurActuelle' => Theme::current(),
+            'presets' => Theme::presets(),
+            'couleurBouton' => Theme::primary(),
+            'couleurHeader' => Theme::headerColor(),
+            'couleurNavbar' => Theme::navbarColor(),
+            'couleurFond' => Theme::pageColor(),
             'logoPath' => Setting::get('logo_path'),
         ]);
     }
 
     public function update(Request $request): RedirectResponse
     {
+        $hex = 'regex:/^#[0-9a-fA-F]{6}$/';
+
         $validated = $request->validate([
-            'primary_color' => ['required', 'string', 'in:'.implode(',', array_keys(Theme::palettes()))],
+            'primary_color' => ['required', 'string', $hex],
+            'color_header' => ['nullable', 'string', $hex],
+            'color_navbar' => ['nullable', 'string', $hex],
+            'color_page' => ['nullable', 'string', $hex],
             'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
             'supprimer_logo' => ['nullable', 'boolean'],
+        ], [
+            'primary_color.regex' => 'La couleur doit être un code hexadécimal valide (ex. #4f46e5).',
+            'color_header.regex' => 'La couleur doit être un code hexadécimal valide.',
+            'color_navbar.regex' => 'La couleur doit être un code hexadécimal valide.',
+            'color_page.regex' => 'La couleur doit être un code hexadécimal valide.',
         ]);
 
         Setting::set('primary_color', $validated['primary_color']);
+
+        foreach (self::ZONES as $zone) {
+            if ($request->has($zone)) {
+                Setting::set($zone, $validated[$zone] ?? null);
+            }
+        }
 
         $logoPath = Setting::get('logo_path');
 

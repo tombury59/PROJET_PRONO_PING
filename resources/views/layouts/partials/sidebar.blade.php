@@ -4,13 +4,13 @@
         mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         sidebarOpen ? 'lg:w-64' : 'lg:w-20',
     ]"
-    class="fixed inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col border-r border-primary-100 bg-primary-50 transition-all duration-200 ease-in-out lg:relative dark:border-primary-900/50 dark:bg-primary-950"
+    class="fixed inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col border-r border-[color:var(--zone-navbar-border)] bg-[var(--zone-navbar)] text-[color:var(--zone-navbar-fg)] transition-all duration-200 ease-in-out lg:relative"
 >
     <!-- Logo / brand -->
-    <div class="flex h-16 shrink-0 items-center gap-2 border-b border-primary-100 px-4 dark:border-primary-900/50">
+    <div class="flex h-16 shrink-0 items-center gap-2 border-b border-[color:var(--zone-navbar-border)] px-4">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-2 overflow-hidden">
-            <x-application-logo class="h-8 w-8 shrink-0 fill-current text-surface-900 dark:text-white" />
-            <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate font-semibold text-surface-900 dark:text-white">
+            <x-application-logo class="h-8 w-8 shrink-0 fill-current text-[color:var(--zone-navbar-fg)]" />
+            <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate font-semibold text-[color:var(--zone-navbar-fg)]">
                 {{ config('app.name') }}
             </span>
         </a>
@@ -18,7 +18,7 @@
         <!-- Close button (mobile only) -->
         <button
             @click="mobileOpen = false"
-            class="ml-auto rounded-sm p-1.5 text-surface-500 hover:bg-black/5 hover:text-surface-900 lg:hidden dark:text-surface-400 dark:hover:bg-white/5 dark:hover:text-white"
+            class="ml-auto rounded-sm p-1.5 text-[color:var(--zone-navbar-fg)] hover:bg-[var(--zone-navbar-hover)] lg:hidden"
         >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5" aria-hidden="true">
                 <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -64,8 +64,8 @@
 
         <!-- Administration -->
         @if (auth()->user()?->isAdmin())
-            <div class="mt-4 border-t border-primary-100 pt-4 dark:border-primary-900/50">
-                <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="block px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-surface-400 dark:text-surface-500">
+            <div class="mt-4 border-t border-[color:var(--zone-navbar-border)] pt-4">
+                <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="block px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[color:var(--zone-navbar-fg)] opacity-60">
                     Administration
                 </span>
 
@@ -112,7 +112,7 @@
     <button
         @click="sidebarOpen = !sidebarOpen"
         x-bind:class="! sidebarOpen && 'lg:justify-center lg:px-0'"
-        class="hidden shrink-0 items-center gap-3 border-t border-primary-100 px-4 py-3 text-sm font-medium text-surface-500 hover:bg-primary-100 hover:text-surface-900 lg:flex dark:border-surface-800 dark:text-surface-400 dark:hover:bg-white/5 dark:hover:text-white"
+        class="hidden shrink-0 items-center gap-3 border-t border-[color:var(--zone-navbar-border)] px-4 py-3 text-sm font-medium text-[color:var(--zone-navbar-fg)] hover:bg-[var(--zone-navbar-hover)] lg:flex"
     >
         <svg
             class="size-5 shrink-0 transition-transform"
@@ -125,12 +125,12 @@
     </button>
 
     <!-- User / logout -->
-    <div class="shrink-0 border-t border-primary-100 p-3 dark:border-primary-900/50">
+    <div class="shrink-0 border-t border-[color:var(--zone-navbar-border)] p-3">
         <a
             href="{{ route('profile.edit') }}"
             @click="mobileOpen = false"
             x-bind:class="! sidebarOpen && 'lg:justify-center'"
-            class="flex items-center gap-3 overflow-hidden rounded-md px-1 py-1 text-surface-700 transition-colors hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-white/5"
+            class="flex items-center gap-3 overflow-hidden rounded-md px-1 py-1 text-[color:var(--zone-navbar-fg)] transition-colors hover:bg-[var(--zone-navbar-hover)]"
         >
             @auth
                 <x-avatar :user="auth()->user()" class="size-8" />
@@ -147,7 +147,7 @@
             <button
                 type="submit"
                 x-bind:class="! sidebarOpen && 'lg:w-10 lg:justify-center lg:px-0 lg:mx-auto'"
-                class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-surface-700 hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-white/5"
+                class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-[color:var(--zone-navbar-fg)] hover:bg-[var(--zone-navbar-hover)]"
             >
                 <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

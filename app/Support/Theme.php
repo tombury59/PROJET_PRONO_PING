@@ -7,40 +7,170 @@ use App\Models\Setting;
 class Theme
 {
     /**
-     * Toutes les palettes disponibles (clé => ['label' => ..., 'shades' => [...]]).
+     * Poids de mélange par nuance : 'w' = vers le blanc, 'k' = vers le noir,
+     * null = couleur de base telle quelle (nuance 600).
      */
-    public static function palettes(): array
-    {
-        return config('themes.palettes', []);
-    }
+    private const STEPS = [
+        50 => ['w', 0.90],
+        100 => ['w', 0.80],
+        200 => ['w', 0.64],
+        300 => ['w', 0.46],
+        400 => ['w', 0.26],
+        500 => ['w', 0.12],
+        600 => [null, 0.0],
+        700 => ['k', 0.12],
+        800 => ['k', 0.26],
+        900 => ['k', 0.42],
+        950 => ['k', 0.62],
+    ];
 
     public static function default(): string
     {
-        return config('themes.default', 'indigo');
+        return config('themes.default', '#4f46e5');
+    }
+
+    /** Raccourcis proposés sous le sélecteur (libellé => hex). */
+    public static function presets(): array
+    {
+        return config('themes.presets', []);
+    }
+
+    public static function isHex(?string $value): bool
+    {
+        return is_string($value) && preg_match('/^#[0-9a-fA-F]{6}$/', $value) === 1;
     }
 
     /**
-     * Palette actuellement sélectionnée (retombe sur le défaut si invalide).
+     * Couleur des boutons / accents (pilote la palette primary-*).
+     * Résout les anciens noms de palette (ex. "red") et retombe sur le défaut.
      */
+    public static function primary(): string
+    {
+        $value = Setting::get('primary_color', static::default());
+
+        if (static::isHex($value)) {
+            return strtolower($value);
+        }
+
+        return config('themes.aliases', [])[$value] ?? static::default();
+    }
+
+    /** Alias historique conservé pour les vues existantes. */
     public static function current(): string
     {
-        $choice = Setting::get('primary_color', static::default());
-
-        return array_key_exists($choice, static::palettes()) ? $choice : static::default();
+        return static::primary();
     }
 
     /**
-     * Bloc `:root` définissant les variables CSS de la couleur primaire.
+     * Nuances générées à partir de la couleur des boutons.
+     *
+     * @return array<int, array{0:int,1:int,2:int}> shade => [r,g,b]
+     */
+    public static function primaryRgb(): array
+    {
+        [$r, $g, $b] = sscanf(static::primary(), '#%02x%02x%02x');
+
+        $out = [];
+        foreach (self::STEPS as $shade => [$dir, $weight]) {
+            if ($dir === 'w') {
+                $out[$shade] = [
+                    (int) round($r + (255 - $r) * $weight),
+                    (int) round($g + (255 - $g) * $weight),
+                    (int) round($b + (255 - $b) * $weight),
+                ];
+            } elseif ($dir === 'k') {
+                $out[$shade] = [
+                    (int) round($r * (1 - $weight)),
+                    (int) round($g * (1 - $weight)),
+                    (int) round($b * (1 - $weight)),
+                ];
+            } else {
+                $out[$shade] = [$r, $g, $b];
+            }
+        }
+
+        return $out;
+    }
+
+    private static function shadeHex(int $shade): string
+    {
+        [$r, $g, $b] = static::primaryRgb()[$shade];
+
+        return sprintf('#%02x%02x%02x', $r, $g, $b);
+    }
+
+    /** Couleur d'une zone (réglage libre) ou repli sur une nuance de la palette. */
+    private static function zone(string $key, string $fallback): string
+    {
+        $value = Setting::get($key);
+
+        return static::isHex($value) ? strtolower($value) : $fallback;
+    }
+
+    public static function pageColor(): string
+    {
+        return static::zone('color_page', static::shadeHex(50));
+    }
+
+    public static function headerColor(): string
+    {
+        return static::zone('color_header', static::shadeHex(100));
+    }
+
+    public static function navbarColor(): string
+    {
+        return static::zone('color_navbar', static::shadeHex(100));
+    }
+
+    /** Luminance perçue (0 = noir, 1 = blanc). */
+    private static function luminance(string $hex): float
+    {
+        [$r, $g, $b] = sscanf($hex, '#%02x%02x%02x');
+
+        return (0.299 * $r + 0.587 * $g + 0.114 * $b) / 255;
+    }
+
+    /** Couleur de texte lisible (foncé ou blanc) sur un fond donné. */
+    public static function foreground(string $hex): string
+    {
+        return static::luminance($hex) > 0.6 ? '#171717' : '#ffffff';
+    }
+
+    /** Overlay translucide basé sur la couleur de texte (bordures / survols). */
+    private static function overlay(string $fgHex, float $alpha): string
+    {
+        [$r, $g, $b] = sscanf($fgHex, '#%02x%02x%02x');
+
+        return "rgba($r, $g, $b, $alpha)";
+    }
+
+    /**
+     * Bloc `:root` : palette primary-* (r g b) + variables de zones.
      */
     public static function cssVariables(): string
     {
-        $shades = static::palettes()[static::current()]['shades'] ?? [];
-
         $lines = '';
-        foreach ($shades as $shade => $hex) {
-            [$r, $g, $b] = sscanf($hex, '#%02x%02x%02x');
+
+        // Palette des boutons / accents.
+        foreach (static::primaryRgb() as $shade => [$r, $g, $b]) {
             $lines .= "--color-primary-{$shade}:{$r} {$g} {$b};";
         }
+
+        // Zones indépendantes.
+        $page = static::pageColor();
+        $header = static::headerColor();
+        $navbar = static::navbarColor();
+        $navFg = static::foreground($navbar);
+        $headerFg = static::foreground($header);
+
+        $lines .= "--zone-page:{$page};";
+        $lines .= "--zone-header:{$header};";
+        $lines .= "--zone-header-fg:{$headerFg};";
+        $lines .= '--zone-header-border:'.static::overlay($headerFg, 0.12).';';
+        $lines .= "--zone-navbar:{$navbar};";
+        $lines .= "--zone-navbar-fg:{$navFg};";
+        $lines .= '--zone-navbar-border:'.static::overlay($navFg, 0.15).';';
+        $lines .= '--zone-navbar-hover:'.static::overlay($navFg, 0.12).';';
 
         return ":root{{$lines}}";
     }
