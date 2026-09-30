@@ -7,18 +7,21 @@
     class="fixed inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col border-r border-[color:var(--zone-navbar-border)] bg-[var(--zone-navbar)] text-[color:var(--zone-navbar-fg)] transition-all duration-200 ease-in-out lg:relative"
 >
     <!-- Logo / brand -->
-    <div class="flex h-16 shrink-0 items-center gap-2 border-b border-[color:var(--zone-navbar-border)] px-4">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-2 overflow-hidden">
-            <x-application-logo class="h-8 w-8 shrink-0 fill-current text-[color:var(--zone-navbar-fg)]" />
-            <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate font-semibold text-[color:var(--zone-navbar-fg)]">
+    <div class="relative flex shrink-0 flex-col items-center gap-2 border-b border-[color:var(--zone-navbar-border)] px-4">
+        <a href="{{ route('dashboard') }}" class="flex flex-col items-center gap-2 overflow-hidden">
+            <x-application-logo
+                x-bind:class="(sidebarOpen || mobileOpen) ? 'h-[clamp(3rem,22vh,12rem)] w-[clamp(3rem,22vh,12rem)]' : 'h-12 w-12'"
+                class="rounded-lg shrink-0 fill-current text-[color:var(--zone-navbar-fg)] transition-all duration-200 ease-in-out"
+            />
+            <!-- <span x-show="sidebarOpen || mobileOpen" x-transition.opacity class="truncate text-center text-lg font-semibold text-[color:var(--zone-navbar-fg)]">
                 {{ config('app.name') }}
-            </span>
+            </span> -->
         </a>
 
         <!-- Close button (mobile only) -->
         <button
             @click="mobileOpen = false"
-            class="ml-auto rounded-sm p-1.5 text-[color:var(--zone-navbar-fg)] hover:bg-[var(--zone-navbar-hover)] lg:hidden"
+            class="absolute right-3 top-3 rounded-sm p-1.5 text-[color:var(--zone-navbar-fg)] hover:bg-[var(--zone-navbar-hover)] lg:hidden"
         >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5" aria-hidden="true">
                 <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />

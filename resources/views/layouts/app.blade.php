@@ -29,7 +29,7 @@
                 sidebarOpen: JSON.parse(localStorage.getItem('sidebar-open') ?? 'true'),
             }"
             x-effect="localStorage.setItem('sidebar-open', JSON.stringify(sidebarOpen))"
-            class="relative flex w-full bg-[var(--zone-page)]"
+            class="relative flex h-svh w-full overflow-hidden bg-[var(--zone-page)]"
         >
             <!-- This allows screen readers to skip the sidebar and go directly to the main content. -->
             <a class="sr-only" href="#main-content">passer au contenu principal</a>
