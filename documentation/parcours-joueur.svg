@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="13" role="img" aria-label="Le parcours d'un joueur, du pronostic au classement">
+  <defs>
+    <marker id="usr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect x="0.5" y="0.5" width="559" height="399" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="24" y="34" font-size="15" font-weight="600" fill="#0f172a">Le parcours d'un joueur, du pronostic au classement</text>
+
+  <g fill="none" stroke="#94a3b8" stroke-width="1.25">
+    <path d="M280 108V126" marker-end="url(#usr-arrow)"/>
+    <path d="M280 174V192" marker-end="url(#usr-arrow)"/>
+    <path d="M280 240V258" marker-end="url(#usr-arrow)"/>
+    <path d="M280 306V324" marker-end="url(#usr-arrow)"/>
+  </g>
+
+  <g>
+    <rect x="100" y="60" width="360" height="48" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="280" y="89" text-anchor="middle" font-weight="600" fill="#0f172a">1. Pronostiquer avant la date limite</text>
+  </g>
+  <g>
+    <rect x="100" y="126" width="360" height="48" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="280" y="155" text-anchor="middle" font-weight="600" fill="#0f172a">2. Poser le joker ×2 (optionnel)</text>
+  </g>
+  <g>
+    <rect x="100" y="192" width="360" height="48" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="280" y="221" text-anchor="middle" font-weight="600" fill="#0f172a">3. Répondre aux questions bonus</text>
+  </g>
+  <g>
+    <rect x="100" y="258" width="360" height="48" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="280" y="287" text-anchor="middle" font-weight="600" fill="#0f172a">4. Résultat saisi → tes points tombent</text>
+  </g>
+  <g>
+    <rect x="100" y="324" width="360" height="48" rx="8" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+    <text x="280" y="353" text-anchor="middle" font-weight="600" fill="#0f172a">5. Suivre ta position au classement</text>
+  </g>
+</svg>

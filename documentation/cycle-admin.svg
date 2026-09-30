@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="13" role="img" aria-label="Le cycle d'une journee, de la creation au classement">
+  <defs>
+    <marker id="cyc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect x="0.5" y="0.5" width="759" height="299" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="24" y="34" font-size="15" font-weight="600" fill="#0f172a">Le cycle d'une journée, de la création au classement</text>
+
+  <g fill="none" stroke="#94a3b8" stroke-width="1.25">
+    <path d="M166 112H216" marker-end="url(#cyc-arrow)"/>
+    <path d="M356 112H406" marker-end="url(#cyc-arrow)"/>
+    <path d="M546 112H596" marker-end="url(#cyc-arrow)"/>
+    <path d="M666 138V206" marker-end="url(#cyc-arrow)"/>
+    <path d="M596 232H546" marker-end="url(#cyc-arrow)"/>
+    <path d="M406 232H356" marker-end="url(#cyc-arrow)"/>
+    <path d="M286 206V138" stroke-dasharray="4 4" marker-end="url(#cyc-arrow)"/>
+  </g>
+
+  <g>
+    <rect x="26" y="86" width="140" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="96" y="108" text-anchor="middle" font-weight="600" fill="#0f172a">1. Créer la</text>
+    <text x="96" y="123" text-anchor="middle" font-weight="600" fill="#0f172a">phase</text>
+  </g>
+  <g>
+    <rect x="216" y="86" width="140" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="286" y="108" text-anchor="middle" font-weight="600" fill="#0f172a">2. Créer la</text>
+    <text x="286" y="123" text-anchor="middle" font-weight="600" fill="#0f172a">journée</text>
+  </g>
+  <g>
+    <rect x="406" y="86" width="140" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="476" y="108" text-anchor="middle" font-weight="600" fill="#0f172a">3. Joueurs</text>
+    <text x="476" y="123" text-anchor="middle" font-weight="600" fill="#0f172a">pronostiquent</text>
+  </g>
+  <g>
+    <rect x="596" y="86" width="140" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="666" y="116" text-anchor="middle" font-weight="600" fill="#0f172a">4. Verrouillage</text>
+  </g>
+  <g>
+    <rect x="596" y="206" width="140" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="666" y="228" text-anchor="middle" font-weight="600" fill="#0f172a">5. Saisir les</text>
+    <text x="666" y="243" text-anchor="middle" font-weight="600" fill="#0f172a">résultats</text>
+  </g>
+  <g>
+    <rect x="406" y="206" width="140" height="52" rx="8" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+    <text x="476" y="228" text-anchor="middle" font-weight="600" fill="#0f172a">6. Points +</text>
+    <text x="476" y="243" text-anchor="middle" font-weight="600" fill="#0f172a">notifs auto</text>
+  </g>
+  <g>
+    <rect x="216" y="206" width="140" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.25"/>
+    <text x="286" y="228" text-anchor="middle" font-weight="600" fill="#0f172a">7. Valider</text>
+    <text x="286" y="243" text-anchor="middle" font-weight="600" fill="#0f172a">les bonus</text>
+  </g>
+
+  <text x="294" y="176" font-size="11.5" fill="#64748b">journée suivante</text>
+  <text x="476" y="278" text-anchor="middle" font-size="11.5" fill="#64748b">→ Classement à jour</text>
+</svg>

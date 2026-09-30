@@ -1,58 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1 align="center">Prono Ping</h1>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <em>L'application de pronostics de tennis de table du club — pronostique, marque des points, grimpe au classement.</em>
 </p>
 
-## About Laravel
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white" alt="Laravel 11">
+  <img src="https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white" alt="PHP 8.4">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white" alt="Docker ready">
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Points forts
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Pronostics par journée** : les joueurs prédisent les scores des rencontres, avec date limite et verrouillage automatique.
+- **Classement automatique** : les points tombent dès que l'admin saisit un résultat (score exact = 3 pts, bon vainqueur = 1 pt).
+- **Joker ×2 & questions bonus** : un joker par phase pour doubler ses points, plus des questions bonus à 5 pts.
+- **Notifications push (Web Push)** : rappels avant la date limite et alerte quand un résultat est saisi.
+- **Thème personnalisable** : l'admin règle les couleurs par zone (boutons, header, navbar, fond) et le logo du club.
+- **Mode sombre** : bascule clair/sombre avec transition animée, mémorisée par appareil.
+- **PWA** : installable sur mobile (« Ajouter à l'écran d'accueil »).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Aperçu
 
-## Learning Laravel
+**Prono Ping** est une application web développée avec **Laravel 11** pour animer un concours de pronostics au sein d'un club de tennis de table. L'administrateur crée les phases de la saison et les journées de rencontres ; les joueurs pronostiquent les scores avant la date limite ; une fois les résultats saisis, le classement et les points sont recalculés automatiquement et les joueurs sont notifiés.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Le projet tourne en production dans un conteneur **Docker** (Caddy + PHP-FPM + scheduler) avec une base **PostgreSQL**.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Utilisation
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Deux guides pas-à-pas sont fournis dans [`documentation/`](documentation/) :
 
-## Agentic Development
+- **[Guide du joueur](documentation/HOW-USER-USE.md)** — pronostiquer, poser un joker, répondre aux questions bonus, suivre le classement.
+- **[Guide administrateur](documentation/HOW-ADMIN-USE.md)** — créer les phases et journées, saisir les résultats, valider les bonus, personnaliser l'apparence.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+**Barème des points :**
+
+| Situation | Points |
+| --- | --- |
+| Score exact | 3 |
+| Bon vainqueur seulement | 1 |
+| Mauvais pronostic | 0 |
+| Pronostic avec joker | × 2 |
+| Question bonus juste | 5 |
+
+## Installation
+
+### En local (développement)
+
+Prérequis : PHP 8.4, Composer, Node.js 22, et une base MySQL ou PostgreSQL.
 
 ```bash
-composer require laravel/boost --dev
+git clone https://github.com/tombury59/PROJET_PRONO_PING.git
+cd PROJET_PRONO_PING
 
-php artisan boost:install
+composer install
+npm install
+
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed   # crée un compte admin de démo (admin / password)
+
+npm run dev                  # dans un terminal
+php artisan serve            # dans un autre
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+L'app est alors disponible sur http://localhost:8000.
 
-## Contributing
+### En production (Docker)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+git clone https://github.com/tombury59/PROJET_PRONO_PING.git prono && cd prono
+cp .env.docker.example .env.docker   # puis renseigner APP_KEY, APP_URL, VAPID...
+docker compose up -d --build
+docker compose exec app php artisan db:seed --class=UserSeeder --force
+```
 
-## Code of Conduct
+Le conteneur exécute automatiquement les migrations au démarrage (`RUN_MIGRATIONS=true`) et lance le scheduler (rappels de pronostics). Placer un reverse proxy (Caddy, Nginx…) devant pour le HTTPS.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Stack technique
 
-## Security Vulnerabilities
+- **Backend** : Laravel 11, PHP 8.4, Eloquent
+- **Frontend** : Blade, Tailwind CSS, Alpine.js, Vite
+- **Base de données** : PostgreSQL (prod) / MySQL (dev)
+- **Notifications** : Web Push (VAPID)
+- **Déploiement** : Docker Compose (Caddy + PHP-FPM + Supervisor)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Tests
 
-## License
+```bash
+php artisan test
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Contribuer
+
+Ce projet est développé pour le club. Suggestions et retours bienvenus via les *issues* du dépôt. Pour une contribution, ouvre une *pull request* décrivant clairement le changement.
+
+## 📄 Licence
+
+Projet interne du club. Le framework Laravel sous-jacent est distribué sous licence [MIT](https://opensource.org/licenses/MIT).
